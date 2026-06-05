@@ -50,3 +50,7 @@ application-local.yml
 
 ### Lombok ###
 lombok.config
+/.claude
+.mvn/wrapper/maven-wrapper.properties
+mvnw
+mvnw.cmd
