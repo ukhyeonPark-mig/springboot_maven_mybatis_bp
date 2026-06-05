@@ -1,5 +1,6 @@
 package com.example.bp.service;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,5 +28,15 @@ public class BrandingService {
 
     public boolean exists(String filename) {
         return Files.isRegularFile(dir.resolve(filename));
+    }
+
+    /** Write a branding asset (logo/favicon) into the branding directory (FR-10.4). */
+    public void write(String filename, byte[] bytes) {
+        try {
+            Files.createDirectories(dir);
+            Files.write(dir.resolve(filename), bytes);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to write branding asset: " + filename, e);
+        }
     }
 }

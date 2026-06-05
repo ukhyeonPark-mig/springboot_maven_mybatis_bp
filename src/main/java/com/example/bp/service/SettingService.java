@@ -38,4 +38,27 @@ public class SettingService {
             settingMapper.update(setting);
         }
     }
+
+    /** Field-scoped updates that preserve the other singleton columns (FR-10). */
+    @Transactional
+    public void updateInformation(String footer, String version) {
+        Setting setting = get();
+        setting.setFooter(footer);
+        setting.setVersion(version);
+        settingMapper.update(setting);
+    }
+
+    @Transactional
+    public void updatePrivacy(String html) {
+        Setting setting = get();
+        setting.setPrivacy(html);
+        settingMapper.update(setting);
+    }
+
+    @Transactional
+    public void updateTerms(String html) {
+        Setting setting = get();
+        setting.setTerms(html);
+        settingMapper.update(setting);
+    }
 }

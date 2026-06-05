@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'버전 및 라이선스 정보 — ' + ${appName}">버전 및 라이선스 정보</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-body px-xl-3">
+        <div class="container-xl">
+            <div id="info-card" th:fragment="card">
+                <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+                <div class="row">
+                    <div class="col-xl-6 mb-2">
+                        <form hx-post="/admin/setting/information" hx-target="#info-card" hx-swap="outerHTML">
+                            <div class="card mb-3">
+                                <div class="card-header">버전 및 라이선스 정보</div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">푸터 문구</label>
+                                        <input name="footer" type="text" class="form-control" placeholder="© 2026 회사명" th:value="${footer}">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">버전</label>
+                                        <input name="version" type="text" class="form-control" placeholder="1.0.0" th:value="${version}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mb-3">
+                                <button type="submit" class="btn btn-primary">업데이트</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

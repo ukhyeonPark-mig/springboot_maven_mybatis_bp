@@ -30,6 +30,7 @@ import com.example.bp.support.AppProperties;
 import com.example.bp.support.RateLimiterService;
 import com.example.bp.web.admin.AdminAccountController;
 import com.example.bp.web.admin.AdminDashboardController;
+import com.example.bp.web.admin.AdminSettingController;
 import com.example.bp.web.admin.AdminUserController;
 import com.example.bp.web.client.ClientPasswordController;
 import com.example.bp.web.client.ClientProfileController;
@@ -60,7 +61,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {HomeController.class, SigninController.class, AdminDashboardController.class,
         ContactController.class, LegalController.class, SitemapController.class,
         ClientProfileController.class, ClientPasswordController.class,
-        AdminUserController.class, AdminAccountController.class})
+        AdminUserController.class, AdminAccountController.class, AdminSettingController.class})
 @Import({SecurityConfig.class, ThymeleafConfig.class, WebConfig.class, GlobalModelAttributes.class,
         WebRenderingSmokeTest.TestBeans.class})
 @EnableConfigurationProperties(AppProperties.class)
@@ -206,6 +207,22 @@ class WebRenderingSmokeTest {
         mockMvc.perform(get("/admin/account/password").with(authentication(adminAuth())))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("현재 비밀번호")));
+    }
+
+    @Test
+    void adminSettingPagesRender() throws Exception {
+        mockMvc.perform(get("/admin/setting/information").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("버전 및 라이선스 정보")));
+        mockMvc.perform(get("/admin/setting/privacy").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("개인정보 처리방침")));
+        mockMvc.perform(get("/admin/setting/terms").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("서비스 이용약관")));
+        mockMvc.perform(get("/admin/setting/branding").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("정사각형 컬러 로고")));
     }
 
     private static UsernamePasswordAuthenticationToken clientAuth() {
