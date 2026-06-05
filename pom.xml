@@ -23,7 +23,22 @@
         <java.version>21</java.version>
         <thymeleaf-layout-dialect.version>3.3.0</thymeleaf-layout-dialect.version>
         <bucket4j.version>8.14.0</bucket4j.version>
+        <aws-sdk.version>2.25.70</aws-sdk.version>
+        <scrimage.version>4.1.3</scrimage.version>
+        <twelvemonkeys.version>3.10.1</twelvemonkeys.version>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>bom</artifactId>
+                <version>${aws-sdk.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot Web -->
@@ -143,10 +158,35 @@
             <scope>test</scope>
         </dependency>
 
-        <!--
-          Deferred to PR6 (first use): AWS SDK v2 (s3) for R2, Scrimage (WebP),
-          TwelveMonkeys ImageIO (PNG/favicon). Added when implementing storage/image services.
-        -->
+        <!-- AWS SDK v2 S3 client for Cloudflare R2 (PRD §4.1) -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+
+        <!-- Scrimage: WebP encoding for profile images (PRD §FR-8.2). Bundles cwebp/dwebp. -->
+        <dependency>
+            <groupId>com.sksamuel.scrimage</groupId>
+            <artifactId>scrimage-core</artifactId>
+            <version>${scrimage.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sksamuel.scrimage</groupId>
+            <artifactId>scrimage-webp</artifactId>
+            <version>${scrimage.version}</version>
+        </dependency>
+
+        <!-- TwelveMonkeys ImageIO: robust JPEG decode + PNG/favicon work (PRD §FR-10.4) -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-jpeg</artifactId>
+            <version>${twelvemonkeys.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-core</artifactId>
+            <version>${twelvemonkeys.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

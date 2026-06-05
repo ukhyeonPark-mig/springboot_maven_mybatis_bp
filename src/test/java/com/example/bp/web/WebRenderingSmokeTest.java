@@ -16,14 +16,18 @@ import com.example.bp.domain.Setting;
 import com.example.bp.security.AuthSessionService;
 import com.example.bp.security.SecurityPrincipal;
 import com.example.bp.service.BrandingService;
+import com.example.bp.service.ImageService;
 import com.example.bp.service.MailService;
 import com.example.bp.service.OtpService;
+import com.example.bp.service.R2StorageService;
 import com.example.bp.service.SettingService;
 import com.example.bp.service.TurnstileService;
 import com.example.bp.service.UserService;
 import com.example.bp.support.AppProperties;
 import com.example.bp.support.RateLimiterService;
 import com.example.bp.web.admin.AdminDashboardController;
+import com.example.bp.web.client.ClientPasswordController;
+import com.example.bp.web.client.ClientProfileController;
 import com.example.bp.web.home.ContactController;
 import com.example.bp.web.home.HomeController;
 import com.example.bp.web.home.LegalController;
@@ -49,7 +53,8 @@ import org.springframework.test.web.servlet.MockMvc;
  * wiring errors surface without a database. Service deps are mocked.
  */
 @WebMvcTest(controllers = {HomeController.class, SigninController.class, AdminDashboardController.class,
-        ContactController.class, LegalController.class, SitemapController.class})
+        ContactController.class, LegalController.class, SitemapController.class,
+        ClientProfileController.class, ClientPasswordController.class})
 @Import({SecurityConfig.class, ThymeleafConfig.class, WebConfig.class, GlobalModelAttributes.class,
         WebRenderingSmokeTest.TestBeans.class})
 @EnableConfigurationProperties(AppProperties.class)
@@ -66,6 +71,7 @@ class WebRenderingSmokeTest {
     @MockBean UserService userService;
     @MockBean AuthSessionService authSessionService;
     @MockBean MailService mailService;
+    @MockBean ImageService imageService;
 
     @BeforeEach
     void stubs() {
@@ -154,11 +160,39 @@ class WebRenderingSmokeTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("http://localhost:8080/contact")));
     }
 
+    @Test
+    void clientProfileRendersForUser() throws Exception {
+        mockMvc.perform(get("/client/profile").with(authentication(clientAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("프로필 이미지")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("이미지 저장")));
+    }
+
+    @Test
+    void clientPasswordRendersForUser() throws Exception {
+        mockMvc.perform(get("/client/password").with(authentication(clientAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("현재 비밀번호")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("비밀번호 변경")));
+    }
+
+    private static UsernamePasswordAuthenticationToken clientAuth() {
+        SecurityPrincipal user = new SecurityPrincipal(
+                2L, "client@example.com", "사용자", "client", null, "x",
+                List.of(new SimpleGrantedAuthority("ROLE_CLIENT")));
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
+
     @TestConfiguration
     static class TestBeans {
         @Bean
         BrandingService brandingService() {
             return new BrandingService("storage/branding");
+        }
+
+        @Bean
+        R2StorageService r2StorageService(AppProperties properties) {
+            return new R2StorageService(properties, "storage/app");
         }
     }
 }

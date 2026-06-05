@@ -23,6 +23,10 @@ public class UserService {
         return userMapper.findByEmail(email);
     }
 
+    public User findById(Long id) {
+        return userMapper.findById(id);
+    }
+
     public boolean existsByEmail(String email) {
         return userMapper.existsByEmail(email);
     }
@@ -61,5 +65,18 @@ public class UserService {
 
     public void resetPassword(Long userId, String rawPassword) {
         userMapper.updatePasswordAndVerify(userId, passwordEncoder.encode(rawPassword));
+    }
+
+    // ── Profile / password (client + admin account) ─────────────────────────
+    public boolean checkPassword(String rawPassword, String hashed) {
+        return passwordEncoder.matches(rawPassword, hashed);
+    }
+
+    public void changePassword(Long userId, String rawNewPassword) {
+        userMapper.updatePassword(userId, passwordEncoder.encode(rawNewPassword));
+    }
+
+    public void updateProfileImage(Long userId, String filename) {
+        userMapper.updateProfileImage(userId, filename);
     }
 }

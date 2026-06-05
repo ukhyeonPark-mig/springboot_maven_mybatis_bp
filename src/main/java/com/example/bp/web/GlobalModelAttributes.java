@@ -2,6 +2,7 @@ package com.example.bp.web;
 
 import com.example.bp.domain.Setting;
 import com.example.bp.service.BrandingService;
+import com.example.bp.service.R2StorageService;
 import com.example.bp.service.SettingService;
 import com.example.bp.support.AppProperties;
 import com.example.bp.support.FlashMessage;
@@ -24,13 +25,16 @@ public class GlobalModelAttributes {
     private final SettingService settingService;
     private final AppProperties appProperties;
     private final BrandingService brandingService;
+    private final R2StorageService storageService;
     private final boolean local;
 
     public GlobalModelAttributes(SettingService settingService, AppProperties appProperties,
-                                 BrandingService brandingService, Environment environment) {
+                                 BrandingService brandingService, R2StorageService storageService,
+                                 Environment environment) {
         this.settingService = settingService;
         this.appProperties = appProperties;
         this.brandingService = brandingService;
+        this.storageService = storageService;
         this.local = environment.matchesProfiles("local");
     }
 
@@ -54,10 +58,10 @@ public class GlobalModelAttributes {
         return request.getRequestURL().toString();
     }
 
-    /** Public R2 base URL for profile-image avatars (PRD §4.1/§15.4). */
+    /** Public storage base URL for profile-image avatars (R2 domain or /storage). */
     @ModelAttribute("r2PublicUrl")
     public String r2PublicUrl() {
-        return appProperties.r2() != null ? appProperties.r2().publicUrl() : null;
+        return storageService.publicBaseUrl();
     }
 
     @ModelAttribute("hasLogoColorSvg")

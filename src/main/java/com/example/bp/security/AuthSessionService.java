@@ -64,6 +64,17 @@ public class AuthSessionService {
         return target;
     }
 
+    /**
+     * Refresh the stored principal in-place (e.g. after a profile-image change)
+     * so navbar/sidebar avatars reflect the new state without re-login.
+     */
+    public void refresh(User user, HttpServletRequest request, HttpServletResponse response) {
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(tokenFor(user));
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+    }
+
     private String resolveTarget(HttpServletRequest request, HttpServletResponse response,
                                  Authentication authentication) {
         SavedRequest saved = requestCache.getRequest(request, response);

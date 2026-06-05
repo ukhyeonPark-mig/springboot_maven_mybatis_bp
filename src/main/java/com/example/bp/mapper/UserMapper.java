@@ -33,4 +33,8 @@ public interface UserMapper {
 
     /** Set new password, mark verified, and clear OTP state in one statement. */
     int updatePasswordAndVerify(@Param("id") Long id, @Param("password") String password);
+
+    int updatePassword(@Param("id") Long id, @Param("password") String password);
+
+    int updateProfileImage(@Param("id") Long id, @Param("profileImage") String profileImage);
 }
