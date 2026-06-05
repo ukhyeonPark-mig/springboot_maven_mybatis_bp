@@ -28,9 +28,13 @@ import com.example.bp.service.TurnstileService;
 import com.example.bp.service.UserService;
 import com.example.bp.support.AppProperties;
 import com.example.bp.support.RateLimiterService;
+import com.example.bp.service.BackupService;
 import com.example.bp.web.admin.AdminAccountController;
+import com.example.bp.web.admin.AdminBackupController;
 import com.example.bp.web.admin.AdminDashboardController;
+import com.example.bp.web.admin.AdminLogsController;
 import com.example.bp.web.admin.AdminSettingController;
+import com.example.bp.web.admin.AdminSystemController;
 import com.example.bp.web.admin.AdminUserController;
 import com.example.bp.web.client.ClientPasswordController;
 import com.example.bp.web.client.ClientProfileController;
@@ -61,7 +65,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(controllers = {HomeController.class, SigninController.class, AdminDashboardController.class,
         ContactController.class, LegalController.class, SitemapController.class,
         ClientProfileController.class, ClientPasswordController.class,
-        AdminUserController.class, AdminAccountController.class, AdminSettingController.class})
+        AdminUserController.class, AdminAccountController.class, AdminSettingController.class,
+        AdminSystemController.class, AdminLogsController.class, AdminBackupController.class})
 @Import({SecurityConfig.class, ThymeleafConfig.class, WebConfig.class, GlobalModelAttributes.class,
         WebRenderingSmokeTest.TestBeans.class})
 @EnableConfigurationProperties(AppProperties.class)
@@ -80,6 +85,7 @@ class WebRenderingSmokeTest {
     @MockBean MailService mailService;
     @MockBean ImageService imageService;
     @MockBean ProfileImageService profileImageService;
+    @MockBean BackupService backupService;
 
     @BeforeEach
     void stubs() {
@@ -93,6 +99,7 @@ class WebRenderingSmokeTest {
         given(turnstileService.siteKey()).willReturn(null);
         given(userService.searchPage(any(), any(), anyInt()))
                 .willReturn(new UserService.UserPage(List.of(), 1, 1, 0, 0, 0, 0));
+        given(backupService.list()).willReturn(List.of());
     }
 
     @Test
@@ -223,6 +230,19 @@ class WebRenderingSmokeTest {
         mockMvc.perform(get("/admin/setting/branding").with(authentication(adminAuth())))
                 .andExpect(status().isOk())
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("정사각형 컬러 로고")));
+    }
+
+    @Test
+    void adminDevToolPagesRender() throws Exception {
+        mockMvc.perform(get("/admin/development/php").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("시스템 정보")));
+        mockMvc.perform(get("/admin/development/logs").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("로그")));
+        mockMvc.perform(get("/admin/development/backup").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("백업")));
     }
 
     private static UsernamePasswordAuthenticationToken clientAuth() {

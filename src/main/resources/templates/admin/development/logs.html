@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'로그 — ' + ${appName}">로그</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header">
+        <div class="container-xl">
+            <h2 class="page-title">로그</h2>
+            <div class="page-pretitle" th:text="${logFile}">log file</div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <div class="card-body p-0">
+                    <pre class="m-0 p-3" style="max-height:70vh;overflow:auto;font-size:12px;"><th:block th:each="line : ${lines}"><span th:text="${line}">log</span>
+</th:block></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

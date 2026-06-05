@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'데이터베이스 — ' + ${appName}">데이터베이스</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header">
+        <div class="container-xl">
+            <h2 class="page-title">데이터베이스</h2>
+            <div class="page-pretitle">읽기 전용 테이블 브라우저 (로컬 전용)</div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-3">
+                    <div class="list-group">
+                        <a th:each="t : ${tables}" class="list-group-item list-group-item-action"
+                           th:classappend="${t == selectedTable} ? 'active'"
+                           th:href="@{/admin/development/database(table=${t})}" th:text="${t}">table</a>
+                    </div>
+                </div>
+                <div class="col-9">
+                    <div class="card" th:if="${selectedTable != null}">
+                        <div class="card-header" th:text="${selectedTable} + ' (최대 100행)'">table</div>
+                        <div class="table-responsive">
+                            <table class="table card-table table-vcenter table-sm">
+                                <thead><tr><th th:each="c : ${columns}" th:text="${c}">col</th></tr></thead>
+                                <tbody>
+                                    <tr th:each="row : ${rows}">
+                                        <td th:each="c : ${columns}" th:text="${row.get(c)}">val</td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(rows)}"><td th:attr="colspan=${#lists.size(columns)}" class="text-secondary text-center">행이 없습니다.</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="text-secondary" th:if="${selectedTable == null}">왼쪽에서 테이블을 선택하세요.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
