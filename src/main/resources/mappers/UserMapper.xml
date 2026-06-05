@@ -65,4 +65,43 @@
         UPDATE users SET profile_image = #{profileImage} WHERE id = #{id}
     </update>
 
+    <!-- Admin user management (FR-9): numeric search matches id OR email/name LIKE -->
+    <sql id="searchWhere">
+        <where>
+            <if test="search != null and search != ''">
+                (
+                    <if test="numericId != null">id = #{numericId} OR</if>
+                    email LIKE CONCAT('%', #{search}, '%') OR name LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+            <if test="role != null and role != 'all'">
+                AND role = #{role}
+            </if>
+        </where>
+    </sql>
+
+    <select id="search" resultType="User">
+        SELECT <include refid="columns"/> FROM users
+        <include refid="searchWhere"/>
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countSearch" resultType="long">
+        SELECT COUNT(*) FROM users
+        <include refid="searchWhere"/>
+    </select>
+
+    <select id="countByRole" resultType="long">
+        SELECT COUNT(*) FROM users WHERE role = #{role}
+    </select>
+
+    <update id="updateNameRole">
+        UPDATE users SET name = #{name}, role = #{role} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
 </mapper>

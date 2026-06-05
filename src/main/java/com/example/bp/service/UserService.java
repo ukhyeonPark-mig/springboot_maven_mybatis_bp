@@ -1,6 +1,7 @@
 package com.example.bp.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.bp.domain.User;
 import com.example.bp.mapper.UserMapper;
@@ -10,6 +11,13 @@ import org.springframework.stereotype.Service;
 /** User account operations shared by signin (signup/reset) and admin (PR8). */
 @Service
 public class UserService {
+
+    public static final int PAGE_SIZE = 10;
+
+    /** One page of users plus pagination/role-count metadata for the admin list. */
+    public record UserPage(List<User> content, int page, int totalPages, long total,
+                           long countAll, long countClient, long countAdmin) {
+    }
 
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -78,5 +86,42 @@ public class UserService {
 
     public void updateProfileImage(Long userId, String filename) {
         userMapper.updateProfileImage(userId, filename);
+    }
+
+    // ── Admin user management (FR-9) ────────────────────────────────────────
+    public UserPage searchPage(String search, String role, int page) {
+        int safePage = Math.max(page, 1);
+        Integer numericId = parseNumericId(search);
+        long total = userMapper.countSearch(search, numericId, role);
+        int totalPages = (int) Math.max(1, Math.ceil((double) total / PAGE_SIZE));
+        if (safePage > totalPages) {
+            safePage = totalPages;
+        }
+        int offset = (safePage - 1) * PAGE_SIZE;
+        List<User> content = userMapper.search(search, numericId, role, PAGE_SIZE, offset);
+        return new UserPage(content, safePage, totalPages, total,
+                userMapper.count(), userMapper.countByRole("client"), userMapper.countByRole("admin"));
+    }
+
+    public void adminUpdate(Long id, String name, String role, String optionalNewPassword) {
+        userMapper.updateNameRole(id, name, role);
+        if (optionalNewPassword != null && !optionalNewPassword.isEmpty()) {
+            userMapper.updatePassword(id, passwordEncoder.encode(optionalNewPassword));
+        }
+    }
+
+    public void delete(Long id) {
+        userMapper.deleteById(id);
+    }
+
+    private static Integer parseNumericId(String search) {
+        if (search == null || search.isBlank()) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(search.trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 }

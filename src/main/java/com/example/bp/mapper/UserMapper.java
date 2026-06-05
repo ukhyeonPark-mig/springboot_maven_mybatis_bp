@@ -37,4 +37,17 @@ public interface UserMapper {
     int updatePassword(@Param("id") Long id, @Param("password") String password);
 
     int updateProfileImage(@Param("id") Long id, @Param("profileImage") String profileImage);
+
+    // ── Admin user management (FR-9) ────────────────────────────────────────
+    java.util.List<User> search(@Param("search") String search, @Param("numericId") Integer numericId,
+                                @Param("role") String role, @Param("limit") int limit, @Param("offset") int offset);
+
+    long countSearch(@Param("search") String search, @Param("numericId") Integer numericId,
+                     @Param("role") String role);
+
+    long countByRole(@Param("role") String role);
+
+    int updateNameRole(@Param("id") Long id, @Param("name") String name, @Param("role") String role);
+
+    int deleteById(@Param("id") Long id);
 }

@@ -1,5 +1,7 @@
 package com.example.bp.web;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -19,13 +21,16 @@ import com.example.bp.service.BrandingService;
 import com.example.bp.service.ImageService;
 import com.example.bp.service.MailService;
 import com.example.bp.service.OtpService;
+import com.example.bp.service.ProfileImageService;
 import com.example.bp.service.R2StorageService;
 import com.example.bp.service.SettingService;
 import com.example.bp.service.TurnstileService;
 import com.example.bp.service.UserService;
 import com.example.bp.support.AppProperties;
 import com.example.bp.support.RateLimiterService;
+import com.example.bp.web.admin.AdminAccountController;
 import com.example.bp.web.admin.AdminDashboardController;
+import com.example.bp.web.admin.AdminUserController;
 import com.example.bp.web.client.ClientPasswordController;
 import com.example.bp.web.client.ClientProfileController;
 import com.example.bp.web.home.ContactController;
@@ -54,7 +59,8 @@ import org.springframework.test.web.servlet.MockMvc;
  */
 @WebMvcTest(controllers = {HomeController.class, SigninController.class, AdminDashboardController.class,
         ContactController.class, LegalController.class, SitemapController.class,
-        ClientProfileController.class, ClientPasswordController.class})
+        ClientProfileController.class, ClientPasswordController.class,
+        AdminUserController.class, AdminAccountController.class})
 @Import({SecurityConfig.class, ThymeleafConfig.class, WebConfig.class, GlobalModelAttributes.class,
         WebRenderingSmokeTest.TestBeans.class})
 @EnableConfigurationProperties(AppProperties.class)
@@ -72,6 +78,7 @@ class WebRenderingSmokeTest {
     @MockBean AuthSessionService authSessionService;
     @MockBean MailService mailService;
     @MockBean ImageService imageService;
+    @MockBean ProfileImageService profileImageService;
 
     @BeforeEach
     void stubs() {
@@ -83,6 +90,8 @@ class WebRenderingSmokeTest {
         given(settingService.get()).willReturn(setting);
         given(turnstileService.enabled()).willReturn(false);
         given(turnstileService.siteKey()).willReturn(null);
+        given(userService.searchPage(any(), any(), anyInt()))
+                .willReturn(new UserService.UserPage(List.of(), 1, 1, 0, 0, 0, 0));
     }
 
     @Test
@@ -176,11 +185,41 @@ class WebRenderingSmokeTest {
                 .andExpect(content().string(org.hamcrest.Matchers.containsString("비밀번호 변경")));
     }
 
+    @Test
+    void adminUserPanelRenders() throws Exception {
+        mockMvc.perform(get("/admin/user").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("새로운 사용자")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("모든 역할")))
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("id=\"user-panel\"")));
+    }
+
+    @Test
+    void adminAccountProfileRenders() throws Exception {
+        mockMvc.perform(get("/admin/account/profile").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("프로필 이미지")));
+    }
+
+    @Test
+    void adminAccountPasswordRenders() throws Exception {
+        mockMvc.perform(get("/admin/account/password").with(authentication(adminAuth())))
+                .andExpect(status().isOk())
+                .andExpect(content().string(org.hamcrest.Matchers.containsString("현재 비밀번호")));
+    }
+
     private static UsernamePasswordAuthenticationToken clientAuth() {
         SecurityPrincipal user = new SecurityPrincipal(
                 2L, "client@example.com", "사용자", "client", null, "x",
                 List.of(new SimpleGrantedAuthority("ROLE_CLIENT")));
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    }
+
+    private static UsernamePasswordAuthenticationToken adminAuth() {
+        SecurityPrincipal admin = new SecurityPrincipal(
+                1L, "admin@example.com", "관리자", "admin", null, "x",
+                List.of(new SimpleGrantedAuthority("ROLE_ADMIN")));
+        return new UsernamePasswordAuthenticationToken(admin, null, admin.getAuthorities());
     }
 
     @TestConfiguration
