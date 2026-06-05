@@ -1,0 +1,18 @@
+# ── Local development profile ────────────────────────────────────────────────
+# Real MySQL/MariaDB (not H2) so Flyway / Spring Session / LONGTEXT behave as prod.
+# Turnstile site/secret left blank -> TurnstileService.enabled() == false.
+# Quick-login + dev-tool beans are activated via @Profile("local").
+spring:
+  # Local convenience: auto-create the schema if missing (dev only, never prod).
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_DATABASE:bp}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
+  thymeleaf:
+    cache: false
+
+logging:
+  level:
+    com.example.bp: DEBUG
+    org.springframework.security: INFO
+
+server:
+  forward-headers-strategy: none

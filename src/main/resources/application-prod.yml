@@ -1,0 +1,23 @@
+# ── Production profile ───────────────────────────────────────────────────────
+# All secrets supplied via env. Turnstile required. Quick-login / dev tools absent.
+# Behind Cloudflare -> trust forwarded headers (real client IP for rate-limit / Turnstile).
+spring:
+  thymeleaf:
+    cache: true
+  mail:
+    host: ${MAIL_HOST:email-smtp.ap-northeast-2.amazonaws.com}
+    port: ${MAIL_PORT:587}
+    username: ${SES_ACCESS_KEY_ID:}
+    password: ${SES_SECRET_ACCESS_KEY:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  forward-headers-strategy: native
+
+logging:
+  level:
+    com.example.bp: INFO
+  file:
+    name: ${LOG_FILE:logs/bp.log}
