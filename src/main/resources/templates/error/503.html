@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/error}">
+<head><title>503</title></head>
+<body>
+<div layout:fragment="content">
+    <div class="page page-center">
+        <div class="container-tight py-4">
+            <div class="empty">
+                <div class="empty-header">503</div>
+                <p class="empty-title">서비스 점검 중</p>
+                <p class="empty-subtitle text-secondary">현재 서비스 점검 중입니다. 잠시 후 다시 시도해 주세요.</p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

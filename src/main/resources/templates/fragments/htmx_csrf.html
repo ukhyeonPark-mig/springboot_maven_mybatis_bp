@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Wires the CSRF token into every HTMX request from the meta tags (PRD §9). -->
+<script th:fragment="script">
+    document.body.addEventListener('htmx:configRequest', function (evt) {
+        var token = document.querySelector('meta[name="_csrf"]');
+        var header = document.querySelector('meta[name="_csrf_header"]');
+        if (token && header && token.content) {
+            evt.detail.headers[header.content] = token.content;
+        }
+    });
+</script>
+</body>
+</html>
