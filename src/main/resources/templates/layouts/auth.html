@@ -2,24 +2,12 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
-    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"/>
-    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}"/>
+    <th:block th:replace="~{fragments/commons :: head}"></th:block>
+    <th:block th:replace="~{fragments/commons :: csrf}"></th:block>
 
     <th:block layout:fragment="seo">
         <title th:text="${appName}">BP</title>
     </th:block>
-
-    <link rel="icon" href="/favicon.ico" sizes="any"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css"/>
-    <style>
-        html { margin-left: 0 !important; }
-        a, a:hover, a:focus, a:active, a:visited { text-decoration: none; }
-        a:not(.btn), a:not(.btn):hover, a:not(.btn):focus,
-        a:not(.btn):active, a:not(.btn):visited { color: inherit; }
-    </style>
     <th:block layout:fragment="css"></th:block>
 </head>
 
@@ -28,9 +16,8 @@
 
     <th:block th:replace="~{fragments/message :: toasts}"></th:block>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
-    <script th:replace="~{fragments/htmx_csrf :: script}"></script>
+    <th:block th:replace="~{fragments/commons :: tablerJs}"></th:block>
+    <th:block th:replace="~{fragments/commons :: htmx}"></th:block>
     <th:block layout:fragment="js"></th:block>
 </body>
 </html>
