@@ -7,7 +7,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/** email로 {@link SecurityPrincipal}을 로드한다 (PRD §6.1). */
+/**
+ * Spring Security가 인증할 때 "이 이메일의 사용자가 누구인지" 물어보면 답해주는 클래스.
+ * 이메일로 DB에서 사용자를 찾아 로그인에 필요한 정보({@link SecurityPrincipal})로 변환한다.
+ * 없으면 인증 실패로 처리된다 (PRD §6.1).
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

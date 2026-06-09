@@ -19,7 +19,7 @@ import org.springframework.util.StringUtils;
  * AWS SES SMTP를 통한 HTML 메일 발송 (PRD §4.2). OTP 재설정 메일과 문의 제출
  * (선택적 reply-to + 첨부파일 포함)에 사용된다.
  *
- * <p>{@link JavaMailSender}가 설정되지 않은 경우(예: SMTP 없는 local), 메일을
+ * {@link JavaMailSender}가 설정되지 않은 경우(예: SMTP 없는 local), 메일을
  * 발송하는 대신 로그로 남긴다 — 원본의 {@code MAIL_MAILER=log} local 동작을
  * 그대로 따르므로 개발 흐름이 깨지지 않는다.
  */

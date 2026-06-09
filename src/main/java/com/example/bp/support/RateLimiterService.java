@@ -9,10 +9,11 @@ import io.github.bucket4j.ConsumptionProbe;
 import org.springframework.stereotype.Service;
 
 /**
- * (action + IP)별 rate limiting (PRD §8.3)으로, Laravel의 {@code RateLimiter}를
- * 대체한다. 각 키는 Bucket4j fixed-window 버킷을 가진다
- * (capacity = maxAttempts, 매 window마다 통째로 리필됨). 단일 노드 /
- * in-memory — 보일러플레이트에는 적합하며, 확장 시 분산 저장소로 교체한다.
+ * 같은 행동을 정해진 시간 안에 제한되게 허용하도록 하여 무차별 대입 공격을 차단한다.
+ *      --->  (action + IP)별 rate limiting (PRD §8.3)으로, Laravel의 {@code RateLimiter}를 대체한다. 
+ * 
+ * - 각 키는 Bucket4j fixed-window 버킷을 가진다
+ * - (capacity = maxAttempts, 매 window마다 통째로 리필됨). 
  */
 @Service
 public class RateLimiterService {

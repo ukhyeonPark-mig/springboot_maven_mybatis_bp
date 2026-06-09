@@ -52,5 +52,24 @@
         </div>
     </th:block>
 </th:block>
+
+<!--
+  HTMX OOB 오류 토스트: 트리거 요소(폼 등)를 교체하지 않고 body 끝에 토스트만 추가한다.
+  GlobalExceptionHandler가 BusinessException/예상치 못한 오류에 HX-Reswap:none과 함께 사용한다.
+-->
+<th:block th:fragment="errorOob">
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1100;" hx-swap-oob="beforeend:body">
+        <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="toast-header bg-danger text-white">
+                <div class="alert-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                </div>
+                <strong class="me-auto"><h4 class="alert-heading mb-0" th:text="#{toast.error}">오류</h4></strong>
+                <button type="button" class="ms-2 btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" th:text="${error}"></div>
+        </div>
+    </div>
+</th:block>
 </body>
 </html>

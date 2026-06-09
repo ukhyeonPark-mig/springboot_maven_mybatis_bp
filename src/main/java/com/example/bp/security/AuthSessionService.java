@@ -16,9 +16,14 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 /**
- * signin 플로우(login / signup / OTP reset / quick login)를 위한 수동 인증 +
- * 세션 확립으로, 레퍼런스의 {@code Auth::attempt} / {@code Auth::login}을 모방한다.
- * 보안 컨텍스트를 (Spring Session 기반) HTTP 세션에 보존하고 session id를 회전시킨다.
+ * 로그인 처리를 직접 담당하는 서비스. signin 화면의 모든 로그인 경로
+ * (로그인 / 회원가입 후 자동 로그인 / OTP 비밀번호 재설정 후 / 로컬 퀵 로그인)에서 쓴다.
+ *
+ * 하는 일:
+ *   - 이메일·비밀번호 검증
+ *   - 로그인 상태를 HTTP 세션(Spring Session)에 저장 → 이후 요청은 세션으로 신원 확인
+ *   - 로그인 직후 이동할 페이지 결정
+ *   - 세션 고정 공격 방지를 위해 로그인 시 세션 ID 교체
  */
 @Component
 public class AuthSessionService {
@@ -33,22 +38,27 @@ public class AuthSessionService {
         this.authenticationManager = authenticationManager;
     }
 
-    /** 자격 증명을 검증한다 (실패 시 {@code AuthenticationException}을 던진다). */
+    /** 이메일·비밀번호가 맞는지 검증한다. 틀리면 {@code AuthenticationException}이 발생한다. */
     public Authentication authenticate(String email, String password) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
     }
 
-    /** 알려진 사용자에 대한 Authentication을 생성한다 (signup 후 / reset / quick login). */
+    /**
+     * 비밀번호 확인 없이, 이미 신원이 확실한 사용자를 "로그인 상태 객체"로 만든다.
+     * (회원가입 직후·비밀번호 재설정 후·퀵 로그인처럼 검증이 이미 끝난 경우에 사용)
+     */
     public Authentication tokenFor(User user) {
         SecurityPrincipal principal = SecurityPrincipal.from(user);
         return new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
     }
 
     /**
-     * 인증을 세션에 보존하고 로그인 후 이동 대상을 반환한다
-     * (저장된 "intended" URL, 없으면 역할 기본값). session id를 회전시키기 전에
-     * 저장된 요청을 읽는다 (PRD §6.2).
+     * 로그인 상태를 세션에 저장하고, 로그인 후 이동할 URL을 돌려준다.
+     *
+     * 이동 대상: 로그인하려다 막혔던 "원래 가려던 URL"이 있으면 그곳,
+     * 없으면 역할별 기본 페이지(admin → /admin/dashboard, 그 외 → /).
+     * 세션 ID를 교체하면 저장된 "원래 URL"이 사라지므로, 교체 전에 먼저 읽는다 (PRD §6.2).
      */
     public String establishAndResolveTarget(Authentication authentication,
                                             HttpServletRequest request, HttpServletResponse response) {
@@ -64,8 +74,9 @@ public class AuthSessionService {
     }
 
     /**
-     * 저장된 principal을 제자리에서 갱신한다 (예: 프로필 이미지 변경 후)
-     * 재로그인 없이 navbar/sidebar 아바타가 새 상태를 반영하도록.
+     * 세션에 저장된 로그인 사용자 정보를 최신 값으로 교체한다. 재로그인 없이 바뀐 정보를
+     * 즉시 반영할 때 쓴다 (예: 프로필 이미지 변경/삭제 후 navbar·sidebar 아바타 갱신,
+     * 관리자 impersonate로 다른 사용자 전환).
      */
     public void refresh(User user, HttpServletRequest request, HttpServletResponse response) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
@@ -74,6 +85,7 @@ public class AuthSessionService {
         securityContextRepository.saveContext(context, request, response);
     }
 
+    // 로그인 직후 어느 URL로 보낼지 결정하는 헬퍼 메소드
     private String resolveTarget(HttpServletRequest request, HttpServletResponse response,
                                  Authentication authentication) {
         SavedRequest saved = requestCache.getRequest(request, response);

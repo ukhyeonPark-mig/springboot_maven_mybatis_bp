@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import com.example.bp.service.BackupService;
+import com.example.bp.web.exception.CardException;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -36,12 +37,13 @@ public class AdminBackupController {
 
     @PostMapping("/admin/development/backup/create")
     public String create(Model model) {
+        String name;
         try {
-            String name = backupService.create();
-            model.addAttribute("success", "백업이 생성되었습니다: " + name);
+            name = backupService.create();
         } catch (Exception e) {
-            model.addAttribute("error", "백업 생성에 실패했습니다. " + e.getMessage());
+            throw new CardException(CARD, "백업 생성에 실패했습니다. " + e.getMessage()).with("backups", backupService.list());
         }
+        model.addAttribute("success", "백업이 생성되었습니다: " + name);
         model.addAttribute("backups", backupService.list());
         return CARD;
     }
@@ -50,10 +52,10 @@ public class AdminBackupController {
     public String delete(@PathVariable String name, Model model) {
         try {
             backupService.delete(name);
-            model.addAttribute("success", "백업이 삭제되었습니다.");
         } catch (Exception e) {
-            model.addAttribute("error", "백업 삭제에 실패했습니다.");
+            throw new CardException(CARD, "백업 삭제에 실패했습니다.").with("backups", backupService.list());
         }
+        model.addAttribute("success", "백업이 삭제되었습니다.");
         model.addAttribute("backups", backupService.list());
         return CARD;
     }

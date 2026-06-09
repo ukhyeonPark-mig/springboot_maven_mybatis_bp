@@ -4,6 +4,7 @@ import com.example.bp.security.AuthSessionService;
 import com.example.bp.security.SecurityPrincipal;
 import com.example.bp.service.ProfileImageService;
 import com.example.bp.service.UserService;
+import com.example.bp.web.exception.CardException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,28 +43,26 @@ public class ClientProfileController {
                       HttpServletRequest request, HttpServletResponse response, Model model) {
         String error = profileImageService.validate(file);
         if (error != null) {
-            model.addAttribute("error", error);
-            return CARD;
+            throw new CardException(CARD, error);
         }
         try {
             profileImageService.replace(principal.getId(), file);
             authSession.refresh(userService.findById(principal.getId()), request, response);
-            model.addAttribute("success", "프로필 이미지가 업데이트되었습니다.");
         } catch (Exception e) {
-            model.addAttribute("error", "이미지를 처리할 수 없습니다. JPEG 또는 PNG 파일인지 확인해 주세요.");
+            throw new CardException(CARD, "이미지를 처리할 수 없습니다. JPEG 또는 PNG 파일인지 확인해 주세요.");
         }
+        model.addAttribute("success", "프로필 이미지가 업데이트되었습니다.");
         return CARD;
     }
 
     @PostMapping("/client/profile/delete")
     public String delete(@AuthenticationPrincipal SecurityPrincipal principal,
                         HttpServletRequest request, HttpServletResponse response, Model model) {
-        if (profileImageService.remove(principal.getId())) {
-            authSession.refresh(userService.findById(principal.getId()), request, response);
-            model.addAttribute("success", "프로필 이미지가 삭제되었습니다.");
-        } else {
-            model.addAttribute("error", "삭제할 프로필 이미지가 없습니다.");
+        if (!profileImageService.remove(principal.getId())) {
+            throw new CardException(CARD, "삭제할 프로필 이미지가 없습니다.");
         }
+        authSession.refresh(userService.findById(principal.getId()), request, response);
+        model.addAttribute("success", "프로필 이미지가 삭제되었습니다.");
         return CARD;
     }
 }

@@ -4,6 +4,7 @@ import com.example.bp.domain.User;
 import com.example.bp.security.SecurityPrincipal;
 import com.example.bp.service.UserService;
 import com.example.bp.support.PasswordPolicy;
+import com.example.bp.web.exception.CardException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,16 +39,13 @@ public class ClientPasswordController {
         User user = userService.findById(principal.getId());
 
         if (!StringUtils.hasText(currentPassword) || !userService.checkPassword(currentPassword, user.getPassword())) {
-            model.addAttribute("error", "현재 비밀번호가 올바르지 않습니다.");
-            return CARD;
+            throw new CardException(CARD, "현재 비밀번호가 올바르지 않습니다.");
         }
         if (!PasswordPolicy.isValid(newPassword)) {
-            model.addAttribute("error", PasswordPolicy.MESSAGE);
-            return CARD;
+            throw new CardException(CARD, PasswordPolicy.MESSAGE);
         }
         if (!newPassword.equals(confirmation)) {
-            model.addAttribute("error", "새 비밀번호가 일치하지 않습니다.");
-            return CARD;
+            throw new CardException(CARD, "새 비밀번호가 일치하지 않습니다.");
         }
         userService.changePassword(user.getId(), newPassword);
         model.addAttribute("success", "비밀번호가 성공적으로 업데이트되었습니다.");
