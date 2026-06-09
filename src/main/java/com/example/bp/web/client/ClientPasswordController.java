@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/** Client password change (FR-6.2): verify current password + policy + confirm. */
+/** 클라이언트 비밀번호 변경 (FR-6.2): 현재 비밀번호 확인 + 정책 검증 + 확인란 일치 검사. */
 @Controller
 public class ClientPasswordController {
 

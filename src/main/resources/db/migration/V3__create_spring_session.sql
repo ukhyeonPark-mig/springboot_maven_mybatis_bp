@@ -1,6 +1,6 @@
--- Spring Session JDBC schema for MySQL (PRD §5.3)
--- Source: org/springframework/session/jdbc/schema-mysql.sql (Spring Session JDBC).
--- Flyway owns these tables; spring.session.jdbc.initialize-schema is set to "never".
+-- MySQL용 Spring Session JDBC 스키마 (PRD §5.3)
+-- 출처: org/springframework/session/jdbc/schema-mysql.sql (Spring Session JDBC).
+-- 이 테이블들은 Flyway가 관리하며, spring.session.jdbc.initialize-schema는 "never"로 설정됨.
 CREATE TABLE SPRING_SESSION (
     PRIMARY_ID            CHAR(36)     NOT NULL,
     SESSION_ID            CHAR(36)     NOT NULL,

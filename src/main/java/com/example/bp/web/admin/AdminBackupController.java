@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/** Backup management (FR-11.1): create / list / download / delete (admin only). */
+/** 백업 관리 (FR-11.1): 생성 / 목록 / 다운로드 / 삭제 (관리자 전용). */
 @Controller
 public class AdminBackupController {
 

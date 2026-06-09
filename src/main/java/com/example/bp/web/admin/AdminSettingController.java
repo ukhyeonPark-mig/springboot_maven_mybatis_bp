@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Admin settings (FR-10): version/footer info, privacy & terms (HugeRTE rich
- * text), and branding (8 logo variants + multi-size PNG + favicon generation).
+ * 관리자 설정 (FR-10): 버전/푸터 정보, 개인정보 처리방침 및 이용약관(HugeRTE 리치
+ * 텍스트), 브랜딩(로고 변형 8종 + 멀티 사이즈 PNG + favicon 생성).
  */
 @Controller
 public class AdminSettingController {
@@ -32,7 +32,7 @@ public class AdminSettingController {
         this.imageService = imageService;
     }
 
-    // ── Information (FR-10.1) ────────────────────────────────────────────────
+    // ── 정보 (FR-10.1) ────────────────────────────────────────────────
     @GetMapping("/admin/setting/information")
     public String information(Model model) {
         informationModel(model);
@@ -48,7 +48,7 @@ public class AdminSettingController {
         return "admin/setting/information :: card";
     }
 
-    // ── Privacy (FR-10.2) ────────────────────────────────────────────────────
+    // ── 개인정보 처리방침 (FR-10.2) ────────────────────────────────────────────────────
     @GetMapping("/admin/setting/privacy")
     public String privacy(Model model) {
         model.addAttribute("privacy", settingService.get().getPrivacy());
@@ -62,7 +62,7 @@ public class AdminSettingController {
         return "fragments/message :: toasts";
     }
 
-    // ── Terms (FR-10.3) ──────────────────────────────────────────────────────
+    // ── 이용약관 (FR-10.3) ──────────────────────────────────────────────────────
     @GetMapping("/admin/setting/terms")
     public String terms(Model model) {
         model.addAttribute("terms", settingService.get().getTerms());
@@ -76,7 +76,7 @@ public class AdminSettingController {
         return "fragments/message :: toasts";
     }
 
-    // ── Branding (FR-10.4) ───────────────────────────────────────────────────
+    // ── 브랜딩 (FR-10.4) ───────────────────────────────────────────────────
     @GetMapping("/admin/setting/branding")
     public String branding() {
         return "admin/setting/branding";
@@ -116,7 +116,7 @@ public class AdminSettingController {
         return "admin/setting/branding :: card";
     }
 
-    // ── helpers ──────────────────────────────────────────────────────────────
+    // ── 헬퍼 ──────────────────────────────────────────────────────────────
     private void informationModel(Model model) {
         Setting setting = settingService.get();
         model.addAttribute("footer", setting.getFooter());

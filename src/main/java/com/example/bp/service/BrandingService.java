@@ -9,9 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Branding assets on disk (PRD §FR-10.4 / §15.4). Mirrors the reference's
- * {@code public/branding/} directory. PR9 writes logos/favicons here; for now
- * {@link #exists} drives the navbar/sidebar logo-vs-text fallback.
+ * 디스크에 저장되는 브랜딩 에셋 (PRD §FR-10.4 / §15.4). 원본의
+ * {@code public/branding/} 디렉터리를 그대로 따른다. PR9에서 로고/favicon을 여기에
+ * 기록한다. 현재로서는 {@link #exists}가 navbar/sidebar의 로고-vs-텍스트 폴백을 결정한다.
  */
 @Service
 public class BrandingService {
@@ -30,7 +30,7 @@ public class BrandingService {
         return Files.isRegularFile(dir.resolve(filename));
     }
 
-    /** Write a branding asset (logo/favicon) into the branding directory (FR-10.4). */
+    /** 브랜딩 에셋(로고/favicon)을 브랜딩 디렉터리에 기록한다 (FR-10.4). */
     public void write(String filename, byte[] bytes) {
         try {
             Files.createDirectories(dir);

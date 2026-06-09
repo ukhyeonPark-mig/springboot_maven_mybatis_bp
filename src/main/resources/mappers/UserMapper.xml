@@ -65,7 +65,7 @@
         UPDATE users SET profile_image = #{profileImage} WHERE id = #{id}
     </update>
 
-    <!-- Admin user management (FR-9): numeric search matches id OR email/name LIKE -->
+    <!-- 관리자 사용자 관리 (FR-9): 숫자 검색은 id 일치 또는 email/name LIKE 조건으로 처리 -->
     <sql id="searchWhere">
         <where>
             <if test="search != null and search != ''">

@@ -3,11 +3,11 @@ package com.example.bp.mapper;
 import com.example.bp.domain.Setting;
 import org.apache.ibatis.annotations.Mapper;
 
-/** MyBatis mapper for the {@code settings} singleton. */
+/** {@code settings} 싱글톤을 위한 MyBatis mapper. */
 @Mapper
 public interface SettingMapper {
 
-    /** First (only) settings row, or {@code null} if none yet. */
+    /** 첫 번째(유일한) settings 행, 아직 없으면 {@code null}. */
     Setting findFirst();
 
     int insert(Setting setting);

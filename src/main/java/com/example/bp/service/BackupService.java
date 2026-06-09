@@ -17,9 +17,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 /**
- * Database backups (FR-11.1): {@code mysqldump} → zip into a local backup dir.
- * Requires {@code mysqldump} on PATH; create() surfaces a clear error otherwise.
- * Retention cleanup is scheduled (see SchedulingConfig).
+ * 데이터베이스 백업 (FR-11.1): {@code mysqldump} → 로컬 백업 디렉터리에 zip으로 압축.
+ * {@code mysqldump}가 PATH에 있어야 하며, 없으면 create()가 명확한 오류를 노출한다.
+ * 보관 정리는 스케줄링된다 (SchedulingConfig 참고).
  */
 @Service
 public class BackupService {
@@ -97,7 +97,7 @@ public class BackupService {
         Files.deleteIfExists(resolve(name));
     }
 
-    /** Delete backups older than the retention window (scheduled). */
+    /** 보관 기간보다 오래된 백업을 삭제한다 (스케줄링됨). */
     public int cleanup(int keepDays) {
         if (!Files.isDirectory(backupDir)) {
             return 0;

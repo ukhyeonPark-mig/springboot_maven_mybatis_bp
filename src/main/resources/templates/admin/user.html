@@ -14,12 +14,12 @@
             <div id="user-panel" th:fragment="panel">
                 <th:block th:replace="~{fragments/message :: toasts}"></th:block>
 
-                <!-- autocomplete decoys (reference parity) -->
+                <!-- 자동완성 방지용 디코이 입력 (레퍼런스 패리티) -->
                 <input type="text" name="fake_name" autocomplete="name" style="display:none">
                 <input type="email" name="fake_email" autocomplete="email" style="display:none">
                 <input type="password" name="fake_password" autocomplete="new-password" style="display:none">
 
-                <!-- shared filter state for hx-include -->
+                <!-- hx-include용 공유 필터 상태 -->
                 <input type="hidden" id="filterRole" name="role" th:value="${role}">
                 <input type="hidden" id="filterPage" name="page" th:value="${page}">
 
@@ -62,7 +62,7 @@
                     </div>
                 </div>
 
-                <!-- Create card -->
+                <!-- 생성 카드 -->
                 <div class="card mb-2" th:if="${mode == 'create'}">
                     <div class="card-body">
                         <h3>새로운 사용자</h3>
@@ -107,7 +107,7 @@
                     </div>
                 </div>
 
-                <!-- Edit card -->
+                <!-- 수정 카드 -->
                 <div class="card mb-2" th:if="${mode == 'edit'}">
                     <div class="card-body">
                         <h3>사용자 수정</h3>
@@ -204,7 +204,7 @@
     </div>
 </div>
 
-<!-- email check feedback (targeted swap) -->
+<!-- 이메일 확인 피드백 (타깃 swap) -->
 <th:block th:fragment="emailFeedback">
     <small th:if="${emailCheckedOk}" class="text-primary">* 사용 가능</small>
     <small th:if="${emailCheckedOk == false}" class="text-danger">이메일이 확인되지 않았거나 이미 사용 중입니다.</small>

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-/** Minimal log viewer (FR-11.2): tail of the configured log file. */
+/** 최소 로그 뷰어 (FR-11.2): 설정된 로그 파일의 tail. */
 @Controller
 public class AdminLogsController {
 

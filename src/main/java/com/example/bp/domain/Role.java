@@ -1,8 +1,8 @@
 package com.example.bp.domain;
 
 /**
- * User role. Stored in {@code users.role} as the lowercase {@link #value}
- * (matches the Laravel reference); mapped to Spring authority {@code ROLE_*}.
+ * 사용자 역할. {@code users.role}에 소문자 {@link #value}로 저장되며
+ * (Laravel 레퍼런스와 일치), Spring 권한 {@code ROLE_*}로 매핑된다.
  */
 public enum Role {
     CLIENT("client"),
@@ -18,7 +18,7 @@ public enum Role {
         return value;
     }
 
-    /** Spring Security authority, e.g. {@code ROLE_ADMIN}. */
+    /** Spring Security 권한, 예: {@code ROLE_ADMIN}. */
     public String authority() {
         return "ROLE_" + name();
     }

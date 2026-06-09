@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
- * Common model attributes available to every view (layouts, navbar, sidebar,
- * footer): app name, settings singleton, current URI for active-nav, CSRF token
- * for the HTMX meta tags, branding-logo presence, and the local-profile flag.
+ * 모든 뷰(레이아웃, 내비게이션 바, 사이드바, 푸터)에서 사용할 수 있는 공통 모델
+ * 속성: 앱 이름, 설정 싱글톤, 활성 내비게이션용 현재 URI, HTMX 메타 태그용 CSRF
+ * 토큰, 브랜딩 로고 존재 여부, local 프로파일 플래그.
  */
 @ControllerAdvice
 public class GlobalModelAttributes {
@@ -58,7 +58,7 @@ public class GlobalModelAttributes {
         return request.getRequestURL().toString();
     }
 
-    /** Public storage base URL for profile-image avatars (R2 domain or /storage). */
+    /** 프로필 이미지 아바타용 공개 스토리지 기본 URL (R2 도메인 또는 /storage). */
     @ModelAttribute("r2PublicUrl")
     public String r2PublicUrl() {
         return storageService.publicBaseUrl();
@@ -74,13 +74,13 @@ public class GlobalModelAttributes {
         return brandingService.exists("logo_white.svg");
     }
 
-    /** Drives local-only UI (quick login, the sidebar "데이터베이스" item). */
+    /** 로컬 전용 UI를 제어 (빠른 로그인, 사이드바 "데이터베이스" 항목). */
     @ModelAttribute("isLocal")
     public boolean isLocal() {
         return local;
     }
 
-    /** Move any one-shot session flash into the toast model attributes. */
+    /** 일회성 세션 플래시를 토스트 모델 속성으로 옮긴다. */
     @ModelAttribute
     public void flash(HttpServletRequest request, Model model) {
         HttpSession session = request.getSession(false);

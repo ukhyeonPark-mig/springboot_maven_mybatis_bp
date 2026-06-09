@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-/** OTP rules per PRD §FR-2.3 / acceptance criteria (6 digits, 10-min, 5 attempts, constant-time). */
+/** PRD §FR-2.3 / 인수 기준에 따른 OTP 규칙 (6자리, 10분, 5회 시도, 상수 시간). */
 class OtpServiceTest {
 
     private final OtpService otp = new OtpService();

@@ -9,11 +9,12 @@
     <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}"/>
     <link rel="canonical" th:href="${currentUrl}"/>
 
-    <!-- SEO slot (pages override layout:fragment="seo") -->
+    <!-- SEO 슬롯 (각 페이지에서 layout:fragment="seo"로 재정의) -->
     <th:block layout:fragment="seo">
         <title th:text="${appName}">BP</title>
     </th:block>
 
+    <link rel="icon" href="/favicon.ico" sizes="any"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css"/>
     <style>
         /* 세로 스크롤바가 나타날 때 좌측 마진 제거 (PRD §15.1) */

@@ -9,8 +9,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
- * Scheduled operations (PRD §10). Backups run only in prod so local dev doesn't
- * spawn mysqldump; retention keeps 14 days.
+ * 스케줄링 작업 (PRD §10). 로컬 개발 환경에서 mysqldump가 실행되지 않도록 백업은
+ * prod에서만 동작하며, 보존 기간은 14일이다.
  */
 @Configuration
 @EnableScheduling

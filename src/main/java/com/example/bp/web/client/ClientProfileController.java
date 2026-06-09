@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-/** Client profile image (FR-6.1) — delegates the pipeline to ProfileImageService. */
+/** 클라이언트 프로필 이미지 (FR-6.1) — 처리 파이프라인을 ProfileImageService에 위임한다. */
 @Controller
 public class ClientProfileController {
 

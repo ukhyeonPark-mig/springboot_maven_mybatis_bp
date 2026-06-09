@@ -16,10 +16,9 @@ import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
 /**
- * Manual authentication + session establishment for the signin flow
- * (login / signup / OTP reset / quick login), mirroring the reference's
- * {@code Auth::attempt} / {@code Auth::login}. Persists the security context to
- * the (Spring Session-backed) HTTP session and rotates the session id.
+ * signin 플로우(login / signup / OTP reset / quick login)를 위한 수동 인증 +
+ * 세션 확립으로, 레퍼런스의 {@code Auth::attempt} / {@code Auth::login}을 모방한다.
+ * 보안 컨텍스트를 (Spring Session 기반) HTTP 세션에 보존하고 session id를 회전시킨다.
  */
 @Component
 public class AuthSessionService {
@@ -34,22 +33,22 @@ public class AuthSessionService {
         this.authenticationManager = authenticationManager;
     }
 
-    /** Verify credentials (throws {@code AuthenticationException} on failure). */
+    /** 자격 증명을 검증한다 (실패 시 {@code AuthenticationException}을 던진다). */
     public Authentication authenticate(String email, String password) {
         return authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password));
     }
 
-    /** Build an Authentication for a known user (post-signup / reset / quick login). */
+    /** 알려진 사용자에 대한 Authentication을 생성한다 (signup 후 / reset / quick login). */
     public Authentication tokenFor(User user) {
         SecurityPrincipal principal = SecurityPrincipal.from(user);
         return new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
     }
 
     /**
-     * Persist the authentication to the session and return the post-login target
-     * (saved "intended" URL, else role default). Reads the saved request before
-     * rotating the session id (PRD §6.2).
+     * 인증을 세션에 보존하고 로그인 후 이동 대상을 반환한다
+     * (저장된 "intended" URL, 없으면 역할 기본값). session id를 회전시키기 전에
+     * 저장된 요청을 읽는다 (PRD §6.2).
      */
     public String establishAndResolveTarget(Authentication authentication,
                                             HttpServletRequest request, HttpServletResponse response) {
@@ -65,8 +64,8 @@ public class AuthSessionService {
     }
 
     /**
-     * Refresh the stored principal in-place (e.g. after a profile-image change)
-     * so navbar/sidebar avatars reflect the new state without re-login.
+     * 저장된 principal을 제자리에서 갱신한다 (예: 프로필 이미지 변경 후)
+     * 재로그인 없이 navbar/sidebar 아바타가 새 상태를 반영하도록.
      */
     public void refresh(User user, HttpServletRequest request, HttpServletResponse response) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();

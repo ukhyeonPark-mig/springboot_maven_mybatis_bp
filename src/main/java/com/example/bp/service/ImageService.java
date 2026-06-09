@@ -8,21 +8,21 @@ import com.sksamuel.scrimage.webp.WebpWriter;
 import org.springframework.stereotype.Service;
 
 /**
- * Image pipeline (PRD §8.4): decode → cover-crop → encode. Profile images use
- * WebP (quality 85); branding PNG/favicon work is added in PR9.
+ * 이미지 파이프라인 (PRD §8.4): 디코드 → cover-crop → 인코드. 프로필 이미지는
+ * WebP(품질 85)를 사용한다. 브랜딩 PNG/favicon 작업은 PR9에서 추가된다.
  */
 @Service
 public class ImageService {
 
     public static final int PROFILE_WEBP_QUALITY = 85;
 
-    /** Decode bytes, center-crop to fill {@code w×h}, encode as WebP. */
+    /** 바이트를 디코드하고, {@code w×h}를 채우도록 중앙 크롭한 뒤, WebP로 인코드한다. */
     public byte[] toWebpCover(byte[] input, int width, int height, int quality) throws IOException {
         ImmutableImage image = ImmutableImage.loader().fromBytes(input);
         return image.cover(width, height).bytes(WebpWriter.DEFAULT.withQ(quality));
     }
 
-    /** Decode bytes, center-crop to a {@code size×size} square, encode as PNG (branding/favicon). */
+    /** 바이트를 디코드하고, {@code size×size} 정사각형으로 중앙 크롭한 뒤, PNG로 인코드한다 (브랜딩/favicon). */
     public byte[] toPngSquare(byte[] input, int size) throws IOException {
         ImmutableImage image = ImmutableImage.loader().fromBytes(input);
         return image.cover(size, size).bytes(PngWriter.MaxCompression);

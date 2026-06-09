@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-/** Loads a {@link SecurityPrincipal} by email (PRD §6.1). */
+/** email로 {@link SecurityPrincipal}을 로드한다 (PRD §6.1). */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

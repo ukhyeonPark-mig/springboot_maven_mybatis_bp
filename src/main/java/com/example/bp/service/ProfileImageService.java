@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * Shared profile-image pipeline (PRD §FR-8.2) used by both the client area and
- * the admin account: validate → WebP 100/400 → public storage → replace + delete
- * the previous file. Korean validation messages match the reference.
+ * 클라이언트 영역과 관리자 계정 모두에서 사용하는 공유 프로필 이미지 파이프라인
+ * (PRD §FR-8.2): 검증 → WebP 100/400 → public 스토리지 → 이전 파일 교체 + 삭제.
+ * 한국어 검증 메시지는 원본과 동일하다.
  */
 @Service
 public class ProfileImageService {
@@ -30,7 +30,7 @@ public class ProfileImageService {
         this.userService = userService;
     }
 
-    /** Validation error message, or {@code null} if the upload is acceptable. */
+    /** 검증 오류 메시지, 업로드가 허용 가능하면 {@code null}. */
     public String validate(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return "이미지를 선택해 주세요.";
@@ -62,7 +62,7 @@ public class ProfileImageService {
         }
     }
 
-    /** @return true if an image existed and was removed. */
+    /** @return 이미지가 존재했고 제거된 경우 true. */
     public boolean remove(Long userId) {
         User user = userService.findById(userId);
         if (user.getProfileImage() == null) {

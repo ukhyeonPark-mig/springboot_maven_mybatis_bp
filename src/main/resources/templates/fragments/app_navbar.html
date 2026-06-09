@@ -19,7 +19,7 @@
             </div>
 
             <div class="navbar-nav flex-row order-md-last">
-                <!-- Guest -->
+                <!-- 비로그인 사용자 -->
                 <div class="nav-item" sec:authorize="!isAuthenticated()">
                     <a class="nav-link d-flex lh-1 p-0 px-2" th:href="@{/signin}">
                         <svg class="d-none d-md-block" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg>
@@ -30,7 +30,7 @@
                     </a>
                 </div>
 
-                <!-- Authenticated -->
+                <!-- 로그인 사용자 -->
                 <div class="nav-item dropdown" sec:authorize="isAuthenticated()">
                     <span class="nav-link d-flex lh-1 p-0 px-2" data-bs-toggle="dropdown" aria-label="Open user menu" style="cursor: pointer;">
                         <div class="d-none d-xl-block pe-2 text-end">
@@ -38,9 +38,10 @@
                             <div class="mt-1 small text-secondary" th:text="${#authentication.principal.email}">email</div>
                         </div>
                         <span class="avatar avatar-2 bg-blue-lt">
-                            <img th:if="${#authentication.principal.profileImage != null}" alt="프로필 이미지" class="rounded"
-                                 th:src="${r2PublicUrl} + '/user/profile_image/100/' + ${#authentication.principal.profileImage}">
-                            <svg th:unless="${#authentication.principal.profileImage != null}" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg>
+                            <img alt="프로필 이미지" class="rounded"
+                                 th:src="${#authentication.principal.profileImage != null}
+                                         ? (${r2PublicUrl} + '/user/profile_image/100/' + ${#authentication.principal.profileImage})
+                                         : @{/image/no_profile_image.webp}">
                         </span>
                     </span>
                     <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

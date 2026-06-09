@@ -3,7 +3,7 @@ package com.example.bp.domain;
 import java.time.LocalDateTime;
 import lombok.Data;
 
-/** Singleton app settings (table {@code settings}, PRD §5.2). */
+/** 싱글톤 앱 설정 (테이블 {@code settings}, PRD §5.2). */
 @Data
 public class Setting {
     private Long id;

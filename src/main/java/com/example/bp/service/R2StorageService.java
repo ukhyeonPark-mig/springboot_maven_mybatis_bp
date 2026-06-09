@@ -24,11 +24,11 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 /**
- * Object storage (PRD §4.1): two logical disks — public (browser-loadable via
- * custom domain) and private (presigned URLs). Backed by Cloudflare R2 (S3 API)
- * when configured; otherwise falls back to the local filesystem so dev works
- * without R2 credentials. Public assets are served at {@code /storage/**} in
- * fallback mode (see WebConfig).
+ * 오브젝트 스토리지 (PRD §4.1): 두 개의 논리 디스크 — public(커스텀 도메인을 통해
+ * 브라우저에서 로드 가능)과 private(presigned URL). 설정되어 있으면 Cloudflare R2
+ * (S3 API)를 사용하고, 그렇지 않으면 로컬 파일시스템으로 폴백하여 R2 자격 증명 없이도
+ * 개발이 동작한다. 폴백 모드에서 public 에셋은 {@code /storage/**}에서 제공된다
+ * (WebConfig 참고).
  */
 @Service
 public class R2StorageService {
@@ -64,7 +64,7 @@ public class R2StorageService {
         return localPublicDir;
     }
 
-    /** Base URL for public assets: the R2 custom domain, or {@code /storage} locally. */
+    /** public 에셋의 기본 URL: R2 커스텀 도메인, 또는 로컬에서는 {@code /storage}. */
     public String publicBaseUrl() {
         if (r2Enabled && StringUtils.hasText(cfg.publicUrl())) {
             return stripTrailingSlash(cfg.publicUrl());
@@ -124,7 +124,7 @@ public class R2StorageService {
         }
     }
 
-    /** Time-limited URL for a private object (default 15 min, PRD §9). */
+    /** private 오브젝트에 대한 시간 제한 URL (기본 15분, PRD §9). */
     public String presignedUrl(String key, Duration ttl) {
         if (r2Enabled && StringUtils.hasText(cfg.privateBucket())) {
             GetObjectRequest get = GetObjectRequest.builder().bucket(cfg.privateBucket()).key(key).build();
@@ -132,11 +132,11 @@ public class R2StorageService {
                     .signatureDuration(ttl != null ? ttl : DEFAULT_PRESIGN_TTL)
                     .getObjectRequest(get).build()).url().toString();
         }
-        // Local fallback: no presigning; admin-only download endpoint serves the bytes.
+        // 로컬 폴백: presigning 없음. 관리자 전용 다운로드 엔드포인트가 바이트를 제공한다.
         return "/admin/development/backup/download/" + key;
     }
 
-    // ── internals ─────────────────────────────────────────────────────────
+    // ── 내부 구현 ─────────────────────────────────────────────────────────
     private S3Client s3() {
         if (s3 == null) {
             synchronized (this) {

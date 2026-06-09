@@ -58,9 +58,9 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * DB-free rendering smoke test: drives the real Thymeleaf engine (layout dialect,
- * Spring Security dialect, fragments) for the public + admin layouts so template
- * wiring errors surface without a database. Service deps are mocked.
+ * DB 없이 동작하는 렌더링 스모크 테스트: public + admin 레이아웃에 대해 실제 Thymeleaf
+ * 엔진(layout dialect, Spring Security dialect, fragment)을 구동하여 템플릿 연결 오류가
+ * 데이터베이스 없이도 드러나도록 한다. 서비스 의존성은 mock 처리된다.
  */
 @WebMvcTest(controllers = {HomeController.class, SigninController.class, AdminDashboardController.class,
         ContactController.class, LegalController.class, SitemapController.class,

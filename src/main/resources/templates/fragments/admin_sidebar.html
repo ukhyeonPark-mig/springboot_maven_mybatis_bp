@@ -5,7 +5,7 @@
     <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
         <div class="container-fluid">
 
-            <!-- Mobile brand -->
+            <!-- 모바일 브랜드 -->
             <div class="navbar-brand navbar-brand-autodark d-flex d-lg-none">
                 <a th:href="@{/admin/dashboard}">
                     <img th:if="${hasLogoWhiteSvg}" th:src="@{/branding/logo_white.svg}" style="max-width:120px" th:alt="${appName}">
@@ -18,7 +18,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
 
-            <!-- Mobile user dropdown -->
+            <!-- 모바일 사용자 드롭다운 -->
             <a href="javascript:void(0)" class="nav-link d-flex d-lg-none lh-1 p-0 px-2" data-bs-toggle="dropdown" aria-label="Open user menu">
                 <span class="avatar avatar-sm"
                       th:style="${#authentication.principal.profileImage != null}
@@ -38,7 +38,7 @@
                 <a th:href="@{/admin/logout}" class="dropdown-item" th:text="#{btn.logout}">로그아웃</a>
             </div>
 
-            <!-- Desktop brand -->
+            <!-- 데스크톱 브랜드 -->
             <div class="navbar-brand navbar-brand-autodark d-none d-lg-flex">
                 <a th:href="@{/admin/dashboard}" class="mt-2">
                     <img th:if="${hasLogoWhiteSvg}" th:src="@{/branding/logo_white.svg}" style="max-width:120px" th:alt="${appName}">
@@ -67,7 +67,7 @@
                             </a>
                         </li>
 
-                        <!-- Settings dropdown -->
+                        <!-- 설정 드롭다운 -->
                         <li class="nav-item dropdown" th:with="open=${#strings.contains(currentUri, '/admin/setting')}"
                             th:classappend="${open} ? 'active'">
                             <a class="nav-link dropdown-toggle" th:classappend="${open} ? 'show'" href="#navbar-setting"
@@ -85,7 +85,7 @@
                             </div>
                         </li>
 
-                        <!-- System dropdown -->
+                        <!-- 시스템 드롭다운 -->
                         <li class="nav-item dropdown" th:with="open=${#strings.contains(currentUri, '/admin/development')}"
                             th:classappend="${open} ? 'active'">
                             <a class="nav-link dropdown-toggle" th:classappend="${open} ? 'show'" href="#navbar-development"
@@ -98,7 +98,7 @@
                             <div class="dropdown-menu" th:classappend="${open} ? 'show'">
                                 <a th:if="${isLocal}" class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/database')} ? 'active'" th:href="@{/admin/development/database}" th:text="#{nav.database}">데이터베이스</a>
                                 <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/logs')} ? 'active'" th:href="@{/admin/development/logs}" target="_blank" th:text="#{nav.logs}">로그</a>
-                                <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/php')} ? 'active'" th:href="@{/admin/development/php}" th:text="#{nav.phpinfo}">PhpInfo</a>
+                                <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/php')} ? 'active'" th:href="@{/admin/development/php}" th:text="#{nav.phpinfo}">SystemInfo</a>
                                 <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/backup')} ? 'active'" th:href="@{/admin/development/backup}" th:text="#{nav.backup}">백업</a>
                             </div>
                         </li>

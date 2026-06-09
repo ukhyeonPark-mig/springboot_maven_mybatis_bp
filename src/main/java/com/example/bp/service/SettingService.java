@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Access to the {@code settings} singleton with {@code firstOrNew} semantics
- * (PRD §5.2): a missing row is created on first access.
+ * {@code firstOrNew} 의미론으로 {@code settings} 싱글톤에 접근한다
+ * (PRD §5.2): 행이 없으면 최초 접근 시 생성된다.
  */
 @Service
 public class SettingService {
@@ -39,7 +39,7 @@ public class SettingService {
         }
     }
 
-    /** Field-scoped updates that preserve the other singleton columns (FR-10). */
+    /** 다른 싱글톤 컬럼을 보존하는 필드 범위 갱신 (FR-10). */
     @Transactional
     public void updateInformation(String footer, String version) {
         Setting setting = get();

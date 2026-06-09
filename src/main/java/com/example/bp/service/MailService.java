@@ -16,19 +16,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 /**
- * HTML mail via AWS SES SMTP (PRD §4.2). Used for OTP reset mails and contact
- * submissions (with optional reply-to + attachment).
+ * AWS SES SMTP를 통한 HTML 메일 발송 (PRD §4.2). OTP 재설정 메일과 문의 제출
+ * (선택적 reply-to + 첨부파일 포함)에 사용된다.
  *
- * <p>When no {@link JavaMailSender} is configured (e.g. local without SMTP),
- * the message is logged instead of sent — mirroring the reference's
- * {@code MAIL_MAILER=log} local behaviour, so dev flows don't break.
+ * <p>{@link JavaMailSender}가 설정되지 않은 경우(예: SMTP 없는 local), 메일을
+ * 발송하는 대신 로그로 남긴다 — 원본의 {@code MAIL_MAILER=log} local 동작을
+ * 그대로 따르므로 개발 흐름이 깨지지 않는다.
  */
 @Service
 public class MailService {
 
     private static final Logger log = LoggerFactory.getLogger(MailService.class);
 
-    /** Optional mail attachment (contact form, PRD §FR-3). */
+    /** 선택적 메일 첨부파일 (문의 폼, PRD §FR-3). */
     public record Attachment(String filename, byte[] bytes, String contentType) {
     }
 
@@ -72,7 +72,7 @@ public class MailService {
         }
     }
 
-    /** Thrown when sending fails; callers surface the Korean error toast. */
+    /** 발송 실패 시 던져진다. 호출자는 한국어 오류 토스트를 노출한다. */
     public static class MailSendException extends RuntimeException {
         public MailSendException(String message, Throwable cause) {
             super(message, cause);

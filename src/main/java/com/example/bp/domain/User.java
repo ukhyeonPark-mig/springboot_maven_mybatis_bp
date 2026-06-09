@@ -4,9 +4,9 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
- * User account (table {@code users}, PRD §5.1).
- * {@code role} is kept as a raw String for clean MyBatis mapping; use
- * {@link Role#fromValue(String)} where the enum is needed.
+ * 사용자 계정 (테이블 {@code users}, PRD §5.1).
+ * {@code role}은 깔끔한 MyBatis 매핑을 위해 raw String으로 유지하며, enum이
+ * 필요한 곳에서는 {@link Role#fromValue(String)}을 사용한다.
  */
 @Data
 public class User {

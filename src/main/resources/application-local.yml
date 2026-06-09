@@ -1,9 +1,9 @@
-# ── Local development profile ────────────────────────────────────────────────
-# Real MySQL/MariaDB (not H2) so Flyway / Spring Session / LONGTEXT behave as prod.
-# Turnstile site/secret left blank -> TurnstileService.enabled() == false.
-# Quick-login + dev-tool beans are activated via @Profile("local").
+# ── 로컬 개발 프로파일 ────────────────────────────────────────────────
+# Flyway / Spring Session / LONGTEXT가 운영과 동일하게 동작하도록 H2가 아닌 실제 MySQL/MariaDB 사용.
+# Turnstile site/secret를 비워 두면 -> TurnstileService.enabled() == false.
+# 빠른 로그인 + 개발 도구 빈은 @Profile("local")로 활성화된다.
 spring:
-  # Local convenience: auto-create the schema if missing (dev only, never prod).
+  # 로컬 편의 기능: 스키마가 없으면 자동 생성 (개발 전용, 운영에서는 절대 사용 금지).
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_DATABASE:bp}?createDatabaseIfNotExist=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
   thymeleaf:

@@ -20,7 +20,7 @@
                 </a>
             </div>
 
-            <!-- ── Swappable auth card (HTMX target) ───────────────────────── -->
+            <!-- ── 교체 가능한 인증 카드 (HTMX 대상) ───────────────────────── -->
             <div id="auth-card" th:fragment="card"
                  th:with="action=${page == 'Signin'} ? '/signin/login'
                                   : (${page == 'Signup'} ? '/signin/signup'

@@ -8,13 +8,13 @@ import com.example.bp.mapper.UserMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-/** User account operations shared by signin (signup/reset) and admin (PR8). */
+/** signin(회원가입/재설정)과 admin(PR8)이 공유하는 사용자 계정 작업. */
 @Service
 public class UserService {
 
     public static final int PAGE_SIZE = 10;
 
-    /** One page of users plus pagination/role-count metadata for the admin list. */
+    /** 관리자 목록용 사용자 한 페이지와 페이지네이션/역할 카운트 메타데이터. */
     public record UserPage(List<User> content, int page, int totalPages, long total,
                            long countAll, long countClient, long countAdmin) {
     }
@@ -43,7 +43,7 @@ public class UserService {
         return userMapper.findFirstByRole(role);
     }
 
-    /** Create an account; BCrypt-hashes the raw password (PRD §6.1). */
+    /** 계정을 생성한다. 원시 비밀번호를 BCrypt로 해싱한다 (PRD §6.1). */
     public User create(String email, String name, String rawPassword, String role, boolean verified) {
         User user = new User();
         user.setEmail(email);
@@ -58,7 +58,7 @@ public class UserService {
         return user;
     }
 
-    // ── OTP state ───────────────────────────────────────────────────────────
+    // ── OTP 상태 ───────────────────────────────────────────────────────────
     public void setOtp(Long userId, String otp, LocalDateTime expiresAt) {
         userMapper.updateOtp(userId, otp, expiresAt);
     }
@@ -75,7 +75,7 @@ public class UserService {
         userMapper.updatePasswordAndVerify(userId, passwordEncoder.encode(rawPassword));
     }
 
-    // ── Profile / password (client + admin account) ─────────────────────────
+    // ── 프로필 / 비밀번호 (client + admin 계정) ─────────────────────────
     public boolean checkPassword(String rawPassword, String hashed) {
         return passwordEncoder.matches(rawPassword, hashed);
     }
@@ -88,7 +88,7 @@ public class UserService {
         userMapper.updateProfileImage(userId, filename);
     }
 
-    // ── Admin user management (FR-9) ────────────────────────────────────────
+    // ── 관리자 사용자 관리 (FR-9) ────────────────────────────────────────
     public UserPage searchPage(String search, String role, int page) {
         int safePage = Math.max(page, 1);
         Integer numericId = parseNumericId(search);

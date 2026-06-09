@@ -18,9 +18,9 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
 /**
- * Public contact form (FR-3): emails the submission via SES with the sender as
- * reply-to and an optional attachment. Rate-limited 3/10min per IP, Turnstile
- * protected. HTMX returns the form fragment + toast.
+ * 공개 문의 폼 (FR-3): 발신자를 reply-to로 설정하고 선택적 첨부 파일과 함께
+ * SES를 통해 제출 내용을 메일로 전송한다. IP당 10분에 3회로 rate-limit되며,
+ * Turnstile로 보호된다. HTMX는 폼 fragment + 토스트를 반환한다.
  */
 @Controller
 public class ContactController {
@@ -88,7 +88,7 @@ public class ContactController {
                     buildHtml(name, email, subject, message),
                     email, attachment);
             model.addAttribute("success", "문의가 정상적으로 전송되었습니다. 빠른 시일 내에 답변 드리겠습니다.");
-            populate(model, null, null, null, null); // reset on success
+            populate(model, null, null, null, null); // 성공 시 초기화
         } catch (Exception e) {
             response.setHeader("HX-Trigger", "turnstileReset");
             model.addAttribute("error", "메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.");

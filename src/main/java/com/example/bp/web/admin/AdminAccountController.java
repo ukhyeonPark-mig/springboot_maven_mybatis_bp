@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-/** Admin account (FR-8): profile image + password, mirroring the client area on the admin layout. */
+/** 관리자 계정 (FR-8): 프로필 이미지 + 비밀번호. 관리자 레이아웃에서 클라이언트 영역을 동일하게 반영합니다. */
 @Controller
 public class AdminAccountController {
 

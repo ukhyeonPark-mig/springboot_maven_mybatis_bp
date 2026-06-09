@@ -13,22 +13,22 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 
 /**
- * Session-based authorization (PRD §6). Authentication itself is performed
- * manually in the signin controller (rate-limit + Turnstile + HTMX fragments,
- * see {@code SigninController} / {@code AuthSessionService}); form-login here
- * only provides the {@code /signin} entry point that preserves the intended URL.
+ * 세션 기반 인가 (PRD §6). 인증 자체는 signin 컨트롤러에서 수동으로 수행한다
+ * (rate-limit + Turnstile + HTMX fragment, {@code SigninController} /
+ * {@code AuthSessionService} 참고). 여기서의 form-login은 의도한 URL을 보존하는
+ * {@code /signin} 진입점만 제공한다.
  * <ul>
- *   <li>permitAll: public pages + static assets</li>
- *   <li>/client/** authenticated, /admin/** ROLE_ADMIN</li>
- *   <li>unauthenticated protected access -> /signin (intended URL saved)</li>
- *   <li>authenticated non-admin -> 403 (Boot resolves templates/error/403.html)</li>
+ *   <li>permitAll: 공개 페이지 + 정적 자산</li>
+ *   <li>/client/** 인증 필요, /admin/** ROLE_ADMIN</li>
+ *   <li>미인증 상태의 보호 리소스 접근 -> /signin (의도한 URL 저장)</li>
+ *   <li>인증되었으나 admin이 아닌 경우 -> 403 (Boot가 templates/error/403.html을 해석)</li>
  * </ul>
  */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /** BCrypt cost 12 (PRD §6.1, reference BCRYPT_ROUNDS=12). */
+    /** BCrypt cost 12 (PRD §6.1, 참조 BCRYPT_ROUNDS=12). */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
@@ -44,16 +44,16 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/", "/signin", "/signin/**", "/contact", "/privacy", "/terms", "/sitemap.xml").permitAll()
-                .requestMatchers("/css/**", "/js/**", "/branding/**", "/theme/**", "/favicon.ico", "/error").permitAll()
+                .requestMatchers("/css/**", "/js/**", "/image/**", "/branding/**", "/theme/**", "/favicon.ico", "/error").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/client/**").authenticated()
                 .anyRequest().authenticated())
-            // Entry point only: redirect unauthenticated users to /signin (saving the intended URL).
+            // 진입점 전용: 미인증 사용자를 /signin으로 리다이렉트한다 (의도한 URL 저장).
             .formLogin(form -> form
                 .loginPage("/signin")
                 .permitAll())
             .logout(logout -> logout
-                // Navbar/sidebar use GET links (/logout, /admin/logout) — match both
+                // navbar/sidebar는 GET 링크(/logout, /admin/logout)를 사용 — 둘 다 매칭
                 .logoutRequestMatcher(new OrRequestMatcher(
                         new AntPathRequestMatcher("/logout", "GET"),
                         new AntPathRequestMatcher("/admin/logout", "GET")))

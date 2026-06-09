@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-/** XML sitemap of the public routes (FR-5). */
+/** 공개 라우트의 XML 사이트맵 (FR-5). */
 @Controller
 public class SitemapController {
 

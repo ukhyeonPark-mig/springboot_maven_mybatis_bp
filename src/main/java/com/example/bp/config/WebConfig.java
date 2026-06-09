@@ -7,9 +7,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * Serves uploaded branding assets at {@code /branding/**} and, when R2 is not
- * configured (local dev), public storage objects (e.g. profile images) at
- * {@code /storage/**} from the local filesystem.
+ * 업로드된 브랜딩 자산을 {@code /branding/**} 경로로 제공하고, R2가 구성되지 않은
+ * 경우(로컬 개발) 공개 storage 객체(예: 프로필 이미지)를 로컬 파일시스템에서
+ * {@code /storage/**} 경로로 제공한다.
  */
 @Configuration
 public class WebConfig implements WebMvcConfigurer {

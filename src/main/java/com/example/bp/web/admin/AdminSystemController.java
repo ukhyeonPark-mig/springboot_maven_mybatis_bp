@@ -12,8 +12,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * Runtime / environment info (FR-11.3) — the Spring-stack replacement for the
- * reference PhpInfo page. Served at the sidebar's "PhpInfo" route.
+ * 런타임 / 환경 정보 (FR-11.3) — 참조 PhpInfo 페이지를 대체하는 Spring 스택
+ * 버전. 사이드바의 "PhpInfo" 경로에서 제공됩니다.
  */
 @Controller
 public class AdminSystemController {

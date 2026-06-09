@@ -10,8 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
- * Authenticated principal. Carries display fields (name/email/role/profileImage)
- * so navbar/sidebar avatars render without re-querying (PRD §15.4).
+ * 인증된 principal. 표시용 필드(name/email/role/profileImage)를 담고 있어
+ * navbar/sidebar 아바타를 재조회 없이 렌더링할 수 있다 (PRD §15.4).
  */
 public class SecurityPrincipal implements UserDetails {
 
@@ -43,7 +43,7 @@ public class SecurityPrincipal implements UserDetails {
                 List.of(new SimpleGrantedAuthority(role.authority())));
     }
 
-    // ── Display helpers (used in templates) ────────────────────────────────
+    // ── 표시용 헬퍼 (템플릿에서 사용) ────────────────────────────────
     public Long getId() {
         return id;
     }
@@ -68,12 +68,12 @@ public class SecurityPrincipal implements UserDetails {
         return Role.ADMIN.value().equalsIgnoreCase(role);
     }
 
-    /** Name when present, otherwise the email (PRD §15.4). */
+    /** name이 있으면 name, 없으면 email (PRD §15.4). */
     public String getDisplayName() {
         return (name != null && !name.isBlank()) ? name : email;
     }
 
-    /** First character for the initial-avatar fallback (PRD §15.4). */
+    /** 이니셜 아바타 폴백을 위한 첫 글자 (PRD §15.4). */
     public String getInitial() {
         String base = getDisplayName();
         return base.isEmpty() ? "" : base.substring(0, 1);

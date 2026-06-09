@@ -11,11 +11,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 
 /**
- * Cloudflare Turnstile (PRD §4.3), port of {@code App\Support\Turnstile}.
+ * Cloudflare Turnstile (PRD §4.3), {@code App\Support\Turnstile}의 포팅 버전.
  * <ul>
- *   <li>local profile → {@link #enabled()} false, {@link #verify} always true</li>
- *   <li>prod with blank secret → verify true (fail-open)</li>
- *   <li>otherwise calls siteverify</li>
+ *   <li>local 프로파일 → {@link #enabled()} false, {@link #verify}는 항상 true</li>
+ *   <li>prod에서 secret이 비어 있으면 → verify true (fail-open)</li>
+ *   <li>그 외에는 siteverify를 호출</li>
  * </ul>
  */
 @Service
@@ -33,7 +33,7 @@ public class TurnstileService {
         this.config = properties.turnstile();
     }
 
-    /** Whether the widget should be rendered (prod + both keys set). */
+    /** 위젯을 렌더링해야 하는지 여부 (prod + 두 키가 모두 설정됨). */
     public boolean enabled() {
         if (local) {
             return false;
@@ -51,7 +51,7 @@ public class TurnstileService {
         }
         String secret = config.secretKey();
         if (!StringUtils.hasText(secret)) {
-            return true; // fail-open (matches reference)
+            return true; // fail-open (원본과 동일)
         }
         if (!StringUtils.hasText(token)) {
             return false;

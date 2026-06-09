@@ -3,8 +3,8 @@ package com.example.bp.support;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Strongly-typed application settings bound from {@code app.*} (PRD §11).
- * Relaxed binding maps e.g. {@code app.r2.public-bucket} -> {@code r2.publicBucket}.
+ * {@code app.*}에서 바인딩되는 강타입 애플리케이션 설정 (PRD §11).
+ * Relaxed binding은 예를 들어 {@code app.r2.public-bucket} -> {@code r2.publicBucket}로 매핑한다.
  */
 @ConfigurationProperties("app")
 public record AppProperties(

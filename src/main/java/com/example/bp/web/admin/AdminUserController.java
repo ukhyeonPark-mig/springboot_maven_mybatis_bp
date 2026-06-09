@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * Admin user management (FR-9): search (numeric=id, else email/name LIKE), role
- * filter, pagination (10), inline create/edit cards, delete, impersonate — all
- * via HTMX fragment swaps of the {@code #user-panel} region.
+ * 관리자 사용자 관리 (FR-9): 검색(숫자=id, 그 외 email/name LIKE), 역할
+ * 필터, 페이지네이션(10), 인라인 생성/수정 카드, 삭제, 위장 로그인 — 모두
+ * {@code #user-panel} 영역의 HTMX 프래그먼트 교체로 처리됩니다.
  */
 @Controller
 public class AdminUserController {
@@ -42,7 +42,7 @@ public class AdminUserController {
         return "admin/user";
     }
 
-    /** Search / role filter / pagination / create toggle — fragment swap. */
+    /** 검색 / 역할 필터 / 페이지네이션 / 생성 토글 — 프래그먼트 교체. */
     @GetMapping("/admin/user/panel")
     public String panelFragment(@RequestParam(defaultValue = "") String search,
                                @RequestParam(defaultValue = "all") String role,
@@ -161,7 +161,7 @@ public class AdminUserController {
         return "fragments/empty :: empty";
     }
 
-    // ── helpers ──────────────────────────────────────────────────────────────
+    // ── 헬퍼 ──────────────────────────────────────────────────────────────
     private void panel(Model model, String search, String role, int page, String mode) {
         UserService.UserPage result = userService.searchPage(search, role, page);
         model.addAttribute("users", result.content());

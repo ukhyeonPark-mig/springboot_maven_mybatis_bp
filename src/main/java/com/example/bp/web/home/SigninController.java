@@ -29,10 +29,10 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 /**
- * Unified auth page (FR-2): login / signup / OTP password-reset in one card,
- * with HTMX fragment swaps for tab switching and each action. Authentication is
- * performed manually so rate-limiting, Turnstile, and inline error fragments
- * behave like the Livewire reference.
+ * 통합 인증 페이지 (FR-2): 로그인 / 회원가입 / OTP 비밀번호 재설정을 하나의 카드에서 처리하며,
+ * 탭 전환과 각 동작에 HTMX fragment 스왑을 사용한다. 인증은 수동으로 수행하여
+ * rate-limiting, Turnstile, 인라인 오류 fragment가 Livewire 레퍼런스와 동일하게
+ * 동작하도록 한다.
  */
 @Controller
 public class SigninController {
@@ -70,7 +70,7 @@ public class SigninController {
         this.appName = appProperties.name();
     }
 
-    // ── Page + tab switching ─────────────────────────────────────────────────
+    // ── 탭 + 페이지 전환 ───────────────────────────────────────────────
     @GetMapping("/signin")
     public String signin(HttpSession session, Model model) {
         session.removeAttribute(OTP_VERIFIED_EMAIL);
@@ -85,7 +85,7 @@ public class SigninController {
         return CARD;
     }
 
-    // ── Login (FR-2.1) ───────────────────────────────────────────────────────
+    // ── 로그인 (FR-2.1) ───────────────────────────────────────────────────
     @PostMapping("/signin/login")
     public String login(@RequestParam(required = false) String email,
                         @RequestParam(required = false) String password,
@@ -115,14 +115,14 @@ public class SigninController {
         }
     }
 
-    // ── Signup (FR-2.2) ──────────────────────────────────────────────────────
+    // ── 회원가입 (FR-2.2) ────────────────────────────────────────────────
     @PostMapping("/signin/signup")
     public String signup(@RequestParam(required = false) String email,
                          @RequestParam(required = false) String name,
                          @RequestParam(required = false) String password,
                          @RequestParam(required = false) String turnstileToken,
                          HttpServletRequest request, HttpServletResponse response, Model model) {
-        // Validation (reference order: validate -> rate limit -> turnstile -> create)
+        // 검증 (레퍼런스 순서: 검증 -> rate limit -> turnstile -> 생성)
         String validationError = validateSignup(email, name, password);
         if (validationError != null) {
             model.addAttribute("error", validationError);
@@ -147,7 +147,7 @@ public class SigninController {
         return REDIRECT;
     }
 
-    // ── Password reset: send code (FR-2.3 step 1) ────────────────────────────
+    // ── 비밀번호 재설정: 코드 전송 (FR-2.3 단계 1) ──────────────
     @PostMapping("/signin/reset/send")
     public String resetSend(@RequestParam(required = false) String email,
                            HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -182,7 +182,7 @@ public class SigninController {
         return CARD;
     }
 
-    // ── Password reset: verify code (FR-2.3 step 2) ──────────────────────────
+    // ── 비밀번호 재설정: 코드 확인 (FR-2.3 단계 2) ──────────────
     @PostMapping("/signin/reset/verify")
     public String resetVerify(@RequestParam(required = false) String email,
                              @RequestParam(required = false) String code,
@@ -232,7 +232,7 @@ public class SigninController {
         return CARD;
     }
 
-    // ── Password reset: set new password (FR-2.3 step 3) ─────────────────────
+    // ── 비밀번호 재설정: 새 비밀번호 설정 (FR-2.3 단계 3) ────
     @PostMapping("/signin/reset/password")
     public String resetPassword(@RequestParam(required = false) String email,
                                @RequestParam(required = false) String password,
@@ -263,7 +263,7 @@ public class SigninController {
         return CARD;
     }
 
-    // ── Local quick login (FR-2.4 / §6.4) ────────────────────────────────────
+    // ── 로컬 빠른 로그인 (FR-2.4 / §6.4) ─────────────────────────────
     @PostMapping("/signin/quick")
     public String quickLogin(@RequestParam("role") String role,
                             HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -283,7 +283,7 @@ public class SigninController {
         return CARD;
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ── 헬퍼 ───────────────────────────────────────────────────────────────
     private String validateSignup(String email, String name, String password) {
         if (!StringUtils.hasText(email)) {
             return "이메일을 입력해 주세요.";

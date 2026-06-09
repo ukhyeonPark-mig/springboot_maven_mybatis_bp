@@ -6,7 +6,7 @@ import com.example.bp.domain.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-/** MyBatis mapper for {@code users}. Extended in later PRs (search/paging/CRUD). */
+/** {@code users}를 위한 MyBatis mapper. 이후 PR에서 확장됨 (검색/페이징/CRUD). */
 @Mapper
 public interface UserMapper {
 
@@ -14,7 +14,7 @@ public interface UserMapper {
 
     User findById(@Param("id") Long id);
 
-    /** First user with the given role — local quick login (PRD §6.4). */
+    /** 주어진 역할을 가진 첫 번째 사용자 — 로컬 빠른 로그인 (PRD §6.4). */
     User findFirstByRole(@Param("role") String role);
 
     boolean existsByEmail(@Param("email") String email);
@@ -23,7 +23,7 @@ public interface UserMapper {
 
     int insert(User user);
 
-    // ── OTP password-reset state (PRD §FR-2.3) ──────────────────────────────
+    // ── OTP 비밀번호 재설정 상태 (PRD §FR-2.3) ──────────────────────────────
     int updateOtp(@Param("id") Long id, @Param("otp") String otp,
                   @Param("otpExpiresAt") LocalDateTime otpExpiresAt);
 
@@ -31,14 +31,14 @@ public interface UserMapper {
 
     int invalidateOtp(@Param("id") Long id);
 
-    /** Set new password, mark verified, and clear OTP state in one statement. */
+    /** 새 비밀번호 설정, 인증 완료 표시, OTP 상태 초기화를 한 statement로 처리. */
     int updatePasswordAndVerify(@Param("id") Long id, @Param("password") String password);
 
     int updatePassword(@Param("id") Long id, @Param("password") String password);
 
     int updateProfileImage(@Param("id") Long id, @Param("profileImage") String profileImage);
 
-    // ── Admin user management (FR-9) ────────────────────────────────────────
+    // ── 관리자 사용자 관리 (FR-9) ────────────────────────────────────────
     java.util.List<User> search(@Param("search") String search, @Param("numericId") Integer numericId,
                                 @Param("role") String role, @Param("limit") int limit, @Param("offset") int offset);
 

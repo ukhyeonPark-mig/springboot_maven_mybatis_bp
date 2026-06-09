@@ -15,7 +15,7 @@ public class BpApplication {
         SpringApplication.run(BpApplication.class, args);
     }
 
-    /** App-wide timezone = Asia/Seoul (PRD §8.6). */
+    /** 애플리케이션 전역 타임존 = Asia/Seoul (PRD §8.6). */
     @PostConstruct
     void init() {
         TimeZone.setDefault(TimeZone.getTimeZone("Asia/Seoul"));

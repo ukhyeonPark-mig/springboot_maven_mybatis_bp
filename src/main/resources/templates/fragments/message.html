@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <!--
-  Flash → toast (PRD §15.2). Three types keyed on model attributes
-  message / success / error. Rendered bottom-right, manual close only.
-  PR4 reuses this fragment for HTMX OOB swaps (hx-swap-oob).
+  Flash → 토스트 (PRD §15.2). 모델 속성에 따라 세 가지 유형으로 구분됩니다
+  message / success / error. 우측 하단에 렌더링되며, 수동으로만 닫을 수 있습니다.
+  PR4에서는 이 프래그먼트를 HTMX OOB 스왑(hx-swap-oob)에 재사용합니다.
 -->
 <th:block th:fragment="toasts">
     <th:block th:if="${message != null}">
