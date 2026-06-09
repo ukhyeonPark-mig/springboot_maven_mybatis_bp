@@ -97,7 +97,7 @@
                             </a>
                             <div class="dropdown-menu" th:classappend="${open} ? 'show'">
                                 <a th:if="${isLocal}" class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/database')} ? 'active'" th:href="@{/admin/development/database}" th:text="#{nav.database}">데이터베이스</a>
-                                <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/logs')} ? 'active'" th:href="@{/admin/development/logs}" target="_blank" th:text="#{nav.logs}">로그</a>
+                                <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/logs')} ? 'active'" th:href="@{/admin/development/logs}" th:text="#{nav.logs}">로그</a>
                                 <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/php')} ? 'active'" th:href="@{/admin/development/php}" th:text="#{nav.phpinfo}">SystemInfo</a>
                                 <a class="dropdown-item" th:classappend="${#strings.contains(currentUri, '/admin/development/backup')} ? 'active'" th:href="@{/admin/development/backup}" th:text="#{nav.backup}">백업</a>
                             </div>
