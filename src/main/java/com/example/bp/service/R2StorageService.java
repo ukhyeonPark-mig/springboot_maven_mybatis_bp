@@ -24,11 +24,19 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 
 /**
- * 오브젝트 스토리지 (PRD §4.1): 두 개의 논리 디스크 — public(커스텀 도메인을 통해
- * 브라우저에서 로드 가능)과 private(presigned URL). 설정되어 있으면 Cloudflare R2
- * (S3 API)를 사용하고, 그렇지 않으면 로컬 파일시스템으로 폴백하여 R2 자격 증명 없이도
- * 개발이 동작한다. 폴백 모드에서 public 에셋은 {@code /storage/**}에서 제공된다
- * (WebConfig 참고).
+ * 파일(이미지·백업 등)을 저장/조회하는 오브젝트 스토리지 서비스 (PRD §4.1).
+ *
+ * 저장 공간을 두 종류로 나눈다:
+ *   - public  : 누구나 URL로 접근 가능 (예: 프로필 이미지). 커스텀 도메인으로 노출.
+ *   - private : 비공개. 접근 시 15분짜리 임시 서명 URL(presigned URL)을 발급해야만 받을 수 있음.
+ *
+ * 실제 저장 위치는 설정 유무에 따라 자동으로 갈린다:
+ *   - R2 설정이 있으면  → Cloudflare R2에 업로드
+ *   - 설정이 없으면     → 로컬 파일시스템({@code storage/app})에 저장 → R2 키 없이도 개발 가능
+ *     (이 폴백 모드에서 public 파일은 {@code /storage/**} 경로로 제공된다. WebConfig 참고)
+ *
+ * 참고 - "R2인데 왜 S3 SDK?": R2는 AWS S3와 "같은 API"를 쓰도록 만들어진 호환 스토리지라,
+ * AWS S3 SDK를 그대로 쓰되 접속 주소(endpoint)만 R2로 바꿔주면 동작한다 (아래 s3() 참고).
  */
 @Service
 public class R2StorageService {
@@ -64,7 +72,7 @@ public class R2StorageService {
         return localPublicDir;
     }
 
-    /** public 에셋의 기본 URL: R2 커스텀 도메인, 또는 로컬에서는 {@code /storage}. */
+    /** public 파일을 받을 수 있는 기본 URL. R2면 커스텀 도메인, 로컬 폴백이면 {@code /storage}. */
     public String publicBaseUrl() {
         if (r2Enabled && StringUtils.hasText(cfg.publicUrl())) {
             return stripTrailingSlash(cfg.publicUrl());
@@ -124,7 +132,7 @@ public class R2StorageService {
         }
     }
 
-    /** private 오브젝트에 대한 시간 제한 URL (기본 15분, PRD §9). */
+    /** private 파일을 한시적으로 받을 수 있는 임시 서명 URL을 발급한다 (기본 15분 후 만료, PRD §9). */
     public String presignedUrl(String key, Duration ttl) {
         if (r2Enabled && StringUtils.hasText(cfg.privateBucket())) {
             GetObjectRequest get = GetObjectRequest.builder().bucket(cfg.privateBucket()).key(key).build();
@@ -132,17 +140,19 @@ public class R2StorageService {
                     .signatureDuration(ttl != null ? ttl : DEFAULT_PRESIGN_TTL)
                     .getObjectRequest(get).build()).url().toString();
         }
-        // 로컬 폴백: presigning 없음. 관리자 전용 다운로드 엔드포인트가 바이트를 제공한다.
+        // 로컬 폴백: 서명 URL 개념이 없으므로, 관리자 전용 다운로드 엔드포인트로 대신 받게 한다.
         return "/admin/development/backup/download/" + key;
     }
 
     // ── 내부 구현 ─────────────────────────────────────────────────────────
+    // AWS S3 SDK로 R2에 접속한다. endpointOverride로 접속 주소를 R2로 바꾸는 게 핵심이며,
+    // R2는 리전 개념이 없어 "auto", 주소는 path-style을 쓴다. 최초 사용 시에만 생성(지연 초기화).
     private S3Client s3() {
         if (s3 == null) {
             synchronized (this) {
                 if (s3 == null) {
                     s3 = S3Client.builder()
-                            .endpointOverride(URI.create(cfg.endpoint()))
+                            .endpointOverride(URI.create(cfg.endpoint())) // AWS가 아닌 R2 주소로
                             .region(Region.of("auto"))
                             .credentialsProvider(StaticCredentialsProvider.create(
                                     AwsBasicCredentials.create(cfg.accessKeyId(), cfg.secretAccessKey())))
