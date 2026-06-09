@@ -30,7 +30,7 @@
     <div class="page">
         <th:block th:replace="~{fragments/app_navbar :: navbar}"></th:block>
         <div class="page-wrapper">
-            <th:block layout:fragment="content"></th:block>
+            <th:block layout:fragment="content"></th:block> <!-- layout:decorate="~{layouts/app}" 이 명시돼있는 html이 여기에 감싸져 들어감-->
             <th:block th:replace="~{fragments/app_footer :: footer}"></th:block>
         </div>
     </div>
