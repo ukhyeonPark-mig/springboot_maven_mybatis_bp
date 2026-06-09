@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * {@code #user-panel} 영역의 HTMX 프래그먼트 교체로 처리됩니다.
  */
 @Controller
+@RequestMapping("/admin/user")
 public class AdminUserController {
 
     private static final String PANEL = "admin/user :: panel";
@@ -34,7 +36,7 @@ public class AdminUserController {
         this.authSession = authSession;
     }
 
-    @GetMapping("/admin/user")
+    @GetMapping
     public String index(@RequestParam(defaultValue = "") String search,
                        @RequestParam(defaultValue = "all") String role,
                        @RequestParam(defaultValue = "1") int page, Model model) {
@@ -43,7 +45,7 @@ public class AdminUserController {
     }
 
     /** 검색 / 역할 필터 / 페이지네이션 / 생성 토글 — 프래그먼트 교체. */
-    @GetMapping("/admin/user/panel")
+    @GetMapping("/panel")
     public String panelFragment(@RequestParam(defaultValue = "") String search,
                                @RequestParam(defaultValue = "all") String role,
                                @RequestParam(defaultValue = "1") int page,
@@ -52,7 +54,7 @@ public class AdminUserController {
         return PANEL;
     }
 
-    @PostMapping("/admin/user/check-email")
+    @PostMapping("/check-email")
     public String checkEmail(@RequestParam(defaultValue = "") String email, HttpSession session, Model model) {
         boolean ok = StringUtils.hasText(email) && email.contains("@") && !userService.existsByEmail(email);
         if (ok) {
@@ -64,7 +66,7 @@ public class AdminUserController {
         return "admin/user :: emailFeedback";
     }
 
-    @PostMapping("/admin/user/create")
+    @PostMapping("/create")
     public String create(@RequestParam(defaultValue = "") String email,
                          @RequestParam(defaultValue = "") String name,
                          @RequestParam(defaultValue = "") String password,
@@ -98,7 +100,7 @@ public class AdminUserController {
         return PANEL;
     }
 
-    @GetMapping("/admin/user/edit/{id}")
+    @GetMapping("/edit/{id}")
     public String editOpen(@PathVariable Long id,
                           @RequestParam(defaultValue = "") String search,
                           @RequestParam(defaultValue = "all") String role,
@@ -114,7 +116,7 @@ public class AdminUserController {
         return PANEL;
     }
 
-    @PostMapping("/admin/user/update")
+    @PostMapping("/update")
     public String update(@RequestParam Long id,
                         @RequestParam(defaultValue = "") String name,
                         @RequestParam(defaultValue = "") String password,
@@ -140,7 +142,7 @@ public class AdminUserController {
         return PANEL;
     }
 
-    @PostMapping("/admin/user/delete/{id}")
+    @PostMapping("/delete/{id}")
     public String delete(@PathVariable Long id,
                         @RequestParam(defaultValue = "") String search,
                         @RequestParam(defaultValue = "all") String role,
@@ -151,7 +153,7 @@ public class AdminUserController {
         return PANEL;
     }
 
-    @PostMapping("/admin/user/impersonate/{id}")
+    @PostMapping("/impersonate/{id}")
     public String impersonate(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
         User user = userService.findById(id);
         if (user != null) {

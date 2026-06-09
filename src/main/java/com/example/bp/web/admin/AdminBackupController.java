@@ -15,10 +15,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /** 백업 관리 (FR-11.1): 생성 / 목록 / 다운로드 / 삭제 (관리자 전용). */
 @Controller
+@RequestMapping("/admin/development/backup")
 public class AdminBackupController {
 
     private static final String CARD = "admin/development/backup :: card";
@@ -29,13 +31,13 @@ public class AdminBackupController {
         this.backupService = backupService;
     }
 
-    @GetMapping("/admin/development/backup")
+    @GetMapping
     public String backup(Model model) {
         model.addAttribute("backups", backupService.list());
         return "admin/development/backup";
     }
 
-    @PostMapping("/admin/development/backup/create")
+    @PostMapping("/create")
     public String create(Model model) {
         String name;
         try {
@@ -48,7 +50,7 @@ public class AdminBackupController {
         return CARD;
     }
 
-    @PostMapping("/admin/development/backup/delete/{name}")
+    @PostMapping("/delete/{name}")
     public String delete(@PathVariable String name, Model model) {
         try {
             backupService.delete(name);
@@ -60,7 +62,7 @@ public class AdminBackupController {
         return CARD;
     }
 
-    @GetMapping("/admin/development/backup/download/{name}")
+    @GetMapping("/download/{name}")
     @ResponseBody
     public ResponseEntity<Resource> download(@PathVariable String name) {
         Path path = backupService.resolve(name);

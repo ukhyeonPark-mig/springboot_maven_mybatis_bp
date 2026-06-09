@@ -11,10 +11,12 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /** 클라이언트 비밀번호 변경 (FR-6.2): 현재 비밀번호 확인 + 정책 검증 + 확인란 일치 검사. */
 @Controller
+@RequestMapping("/client/password")
 public class ClientPasswordController {
 
     protected static final String CARD = "client/password :: card";
@@ -26,12 +28,12 @@ public class ClientPasswordController {
         this.userService = userService;
     }
 
-    @GetMapping("/client/password")
+    @GetMapping
     public String password() {
         return VIEW;
     }
 
-    @PostMapping("/client/password")
+    @PostMapping
     public String update(@RequestParam(value = "current_password", required = false) String currentPassword,
                         @RequestParam(value = "new_password", required = false) String newPassword,
                         @RequestParam(value = "new_password_confirmation", required = false) String confirmation,

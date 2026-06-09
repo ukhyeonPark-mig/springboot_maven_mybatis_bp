@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 텍스트), 브랜딩(로고 변형 8종 + 멀티 사이즈 PNG + favicon 생성).
  */
 @Controller
+@RequestMapping("/admin/setting")
 public class AdminSettingController {
 
     private static final int[] COLOR_PNG_SIZES = {512, 192, 180, 150, 32, 16};
@@ -33,13 +35,13 @@ public class AdminSettingController {
     }
 
     // ── 정보 (FR-10.1) ────────────────────────────────────────────────
-    @GetMapping("/admin/setting/information")
+    @GetMapping("/information")
     public String information(Model model) {
         informationModel(model);
         return "admin/setting/information";
     }
 
-    @PostMapping("/admin/setting/information")
+    @PostMapping("/information")
     public String saveInformation(@RequestParam(defaultValue = "") String footer,
                                   @RequestParam(defaultValue = "") String version, Model model) {
         settingService.updateInformation(footer, version);
@@ -49,13 +51,13 @@ public class AdminSettingController {
     }
 
     // ── 개인정보 처리방침 (FR-10.2) ────────────────────────────────────────────────────
-    @GetMapping("/admin/setting/privacy")
+    @GetMapping("/privacy")
     public String privacy(Model model) {
         model.addAttribute("privacy", settingService.get().getPrivacy());
         return "admin/setting/privacy";
     }
 
-    @PostMapping("/admin/setting/privacy")
+    @PostMapping("/privacy")
     public String savePrivacy(@RequestParam(defaultValue = "") String privacy, Model model) {
         settingService.updatePrivacy(privacy);
         model.addAttribute("success", "개인정보 처리방침이 업데이트되었습니다.");
@@ -63,13 +65,13 @@ public class AdminSettingController {
     }
 
     // ── 이용약관 (FR-10.3) ──────────────────────────────────────────────────────
-    @GetMapping("/admin/setting/terms")
+    @GetMapping("/terms")
     public String terms(Model model) {
         model.addAttribute("terms", settingService.get().getTerms());
         return "admin/setting/terms";
     }
 
-    @PostMapping("/admin/setting/terms")
+    @PostMapping("/terms")
     public String saveTerms(@RequestParam(defaultValue = "") String terms, Model model) {
         settingService.updateTerms(terms);
         model.addAttribute("success", "이용약관이 업데이트되었습니다.");
@@ -77,12 +79,12 @@ public class AdminSettingController {
     }
 
     // ── 브랜딩 (FR-10.4) ───────────────────────────────────────────────────
-    @GetMapping("/admin/setting/branding")
+    @GetMapping("/branding")
     public String branding() {
         return "admin/setting/branding";
     }
 
-    @PostMapping("/admin/setting/branding")
+    @PostMapping("/branding")
     public String saveBranding(@RequestParam(required = false) MultipartFile logo_color_square_svg,
                               @RequestParam(required = false) MultipartFile logo_color_svg,
                               @RequestParam(required = false) MultipartFile logo_white_square_svg,

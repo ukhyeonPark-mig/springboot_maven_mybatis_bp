@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
@@ -23,6 +24,7 @@ import org.springframework.web.util.HtmlUtils;
  * Turnstile로 보호된다. HTMX는 폼 fragment + 토스트를 반환한다.
  */
 @Controller
+@RequestMapping("/contact")
 public class ContactController {
 
     private static final long MAX_FILE_BYTES = 10L * 1024 * 1024; // 10MB
@@ -42,13 +44,13 @@ public class ContactController {
         this.appProperties = appProperties;
     }
 
-    @GetMapping("/contact")
+    @GetMapping
     public String contact(Model model) {
         populate(model, null, null, null, null);
         return "home/contact";
     }
 
-    @PostMapping("/contact")
+    @PostMapping
     public String send(@RequestParam(required = false) String name,
                       @RequestParam(required = false) String email,
                       @RequestParam(required = false) String subject,

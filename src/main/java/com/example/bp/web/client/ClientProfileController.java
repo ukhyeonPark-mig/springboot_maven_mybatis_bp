@@ -12,11 +12,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 /** 클라이언트 프로필 이미지 (FR-6.1) — 처리 파이프라인을 ProfileImageService에 위임한다. */
 @Controller
+@RequestMapping("/client/profile")
 public class ClientProfileController {
 
     private static final String CARD = "client/profile :: card";
@@ -32,12 +34,12 @@ public class ClientProfileController {
         this.authSession = authSession;
     }
 
-    @GetMapping("/client/profile")
+    @GetMapping
     public String profile() {
         return "client/profile";
     }
 
-    @PostMapping("/client/profile")
+    @PostMapping
     public String save(@RequestParam(value = "profile_image", required = false) MultipartFile file,
                       @AuthenticationPrincipal SecurityPrincipal principal,
                       HttpServletRequest request, HttpServletResponse response, Model model) {
@@ -55,7 +57,7 @@ public class ClientProfileController {
         return CARD;
     }
 
-    @PostMapping("/client/profile/delete")
+    @PostMapping("/delete")
     public String delete(@AuthenticationPrincipal SecurityPrincipal principal,
                         HttpServletRequest request, HttpServletResponse response, Model model) {
         if (!profileImageService.remove(principal.getId())) {

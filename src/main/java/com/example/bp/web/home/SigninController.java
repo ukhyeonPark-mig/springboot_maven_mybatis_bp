@@ -21,12 +21,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-
-
-
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -38,6 +36,7 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
  * 동작하도록 한다.
  */
 @Controller
+@RequestMapping("/signin")
 public class SigninController {
 
     private static final String CARD = "auth/signin :: card";
@@ -74,14 +73,14 @@ public class SigninController {
     }
 
     // ── 탭 + 페이지 전환 ───────────────────────────────────────────────
-    @GetMapping("/signin")
+    @GetMapping
     public String signin(HttpSession session, Model model) {
         session.removeAttribute(OTP_VERIFIED_EMAIL);
         populate(model, PAGE_SIGNIN, false, false, null, null);
         return "auth/signin";
     }
 
-    @GetMapping("/signin/tab")
+    @GetMapping("/tab")
     public String tab(@RequestParam("page") String page, HttpSession session, Model model) {
         session.removeAttribute(OTP_VERIFIED_EMAIL);
         populate(model, normalizePage(page), false, false, null, null);
@@ -89,7 +88,7 @@ public class SigninController {
     }
 
     // ── 로그인 (FR-2.1) ───────────────────────────────────────────────────
-    @PostMapping("/signin/login")
+    @PostMapping("/login")
     public String login(@RequestParam(required = false) String email,
                         @RequestParam(required = false) String password,
                         @RequestParam(required = false) String turnstileToken,
@@ -119,7 +118,7 @@ public class SigninController {
     }
 
     // ── 회원가입 (FR-2.2) ────────────────────────────────────────────────
-    @PostMapping("/signin/signup")
+    @PostMapping("/signup")
     public String signup(@RequestParam(required = false) String email,
                          @RequestParam(required = false) String name,
                          @RequestParam(required = false) String password,
@@ -151,7 +150,7 @@ public class SigninController {
     }
 
     // ── 비밀번호 재설정: 코드 전송 (FR-2.3 단계 1) ──────────────
-    @PostMapping("/signin/reset/send")
+    @PostMapping("/reset/send")
     public String resetSend(@RequestParam(required = false) String email,
                            HttpServletRequest request, HttpServletResponse response, Model model) {
         if (!StringUtils.hasText(email)) {
@@ -186,7 +185,7 @@ public class SigninController {
     }
 
     // ── 비밀번호 재설정: 코드 확인 (FR-2.3 단계 2) ──────────────
-    @PostMapping("/signin/reset/verify")
+    @PostMapping("/reset/verify")
     public String resetVerify(@RequestParam(required = false) String email,
                              @RequestParam(required = false) String code,
                              HttpServletRequest request, HttpSession session, Model model) {
@@ -236,7 +235,7 @@ public class SigninController {
     }
 
     // ── 비밀번호 재설정: 새 비밀번호 설정 (FR-2.3 단계 3) ────
-    @PostMapping("/signin/reset/password")
+    @PostMapping("/reset/password")
     public String resetPassword(@RequestParam(required = false) String email,
                                @RequestParam(required = false) String password,
                                HttpServletRequest request, HttpServletResponse response,
@@ -267,7 +266,7 @@ public class SigninController {
     }
 
     // ── 로컬 빠른 로그인 (FR-2.4 / §6.4) ─────────────────────────────
-    @PostMapping("/signin/quick")
+    @PostMapping("/quick")
     public String quickLogin(@RequestParam("role") String role,
                             HttpServletRequest request, HttpServletResponse response, Model model) {
         if (!local) {
