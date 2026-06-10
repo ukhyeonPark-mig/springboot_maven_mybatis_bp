@@ -343,4 +343,5 @@ Tabler CSS/JS, HTMX 버전이 한곳에만 있어, **버전 업그레이드 시 
 | [docs/02-view-conventions.md](docs/02-view-conventions.md) | **Thymeleaf/HTMX/Tabler** 뷰 작성 규약 (fragment·hx-* 패턴·토스트·UI 스니펫) |
 | [docs/03-content-format.md](docs/03-content-format.md) | 약관/개인정보(`terms`/`privacy`) **HTML 콘텐츠 포맷 규약** |
 | [docs/04-branding.md](docs/04-branding.md) | **브랜딩 자산**(로고/파비콘) 업로드·생성·교체 방법 |
+| [docs/05-ui-colors.md](docs/05-ui-colors.md) | **UI 색상 사용 규칙**(Tabler 대비/가독성) — 버튼·뱃지 색 오용 방지 |
 | [docs/REQUEST_FLOW.md](docs/REQUEST_FLOW.md) | 라우트별 컨트롤러→서비스→매퍼(XML)→템플릿 **전체 흐름 맵** |

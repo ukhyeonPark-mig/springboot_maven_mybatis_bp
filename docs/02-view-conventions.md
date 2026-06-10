@@ -146,6 +146,8 @@
 
 이 프로젝트는 [Tabler](https://tabler.io)(Bootstrap 5 기반)를 씁니다. 자주 쓰는 것:
 
+> ⚠️ **색 대비 주의** — 버튼/뱃지의 배경색과 글자색을 잘못 조합하면 글자가 안 보입니다. 색 사용 규칙(컬러는 `-lt` 변형·시맨틱 버튼 우선)은 **[05-ui-colors.md](05-ui-colors.md)** 를 따르세요.
+
 ```html
 <!-- 카드 -->
 <div class="card"><div class="card-header">제목</div><div class="card-body">...</div></div>
