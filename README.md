@@ -1,8 +1,6 @@
-# BP 보일러플레이트 (Spring Boot 포팅판)
+# BP 보일러플레이트
 
 > 기존 **PHP/Laravel** 보일러플레이트(`bp_latest_ko_2026`)를 **Spring Boot + Java**로 1:1 포팅한 프로젝트입니다.
-> 이 문서는 **Laravel에 익숙한 분**이 "Laravel의 그 개념이 Spring에선 무엇인가"를 빠르게 매핑할 수 있도록 작성했습니다.
-
 ---
 
 ## 0. 한눈에 보기 (TL;DR)
