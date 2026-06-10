@@ -41,16 +41,11 @@ Thumbs.db
 desktop.ini
 
 ### Spring Boot ###
+# NOTE: application-local.yml is a committed, first-class "local" profile (the
+# default dev profile). It holds only non-secret defaults — real secrets come
+# from environment variables (see application.yml ${...} bindings, PRD §11).
 application-local.properties
-application-local.yml
-
-### H2 Database ###
-*.mv.db
-*.trace.db
 
 ### Lombok ###
 lombok.config
 /.claude
-.mvn/wrapper/maven-wrapper.properties
-mvnw
-mvnw.cmd

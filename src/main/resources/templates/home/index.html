@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="${appName}">BP</title>
+        <meta name="description" th:content="${appName} + ' — Spring Boot + MyBatis + Thymeleaf 기반 한국어 보일러플레이트.'"/>
+        <meta name="keywords" content="Spring Boot, MyBatis, Thymeleaf, HTMX, Boilerplate, Korean"/>
+        <meta property="og:url" th:content="${currentUrl}"/>
+        <meta property="og:type" content="website"/>
+        <meta property="og:title" th:content="${appName}"/>
+        <meta property="og:description" content="Spring Boot 한국어 보일러플레이트."/>
+        <meta property="og:image" th:content="@{/og.png}"/>
+        <meta name="twitter:card" content="summary_large_image"/>
+        <meta name="twitter:title" th:content="${appName}"/>
+        <meta name="twitter:description" content="Spring Boot 한국어 보일러플레이트."/>
+        <meta name="twitter:image" th:content="@{/og.png}"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-body">
+        <div class="container-xl py-5">
+            <div class="text-center py-5">
+                <h1 class="display-5 fw-bold mb-3" th:text="${appName}">BP</h1>
+                <p class="fs-3 text-secondary mb-4">Spring Boot + MyBatis + Thymeleaf 한국어 보일러플레이트</p>
+                <a class="btn btn-primary btn-lg" th:href="@{/contact}" th:text="#{btn.contact}">문의하기</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

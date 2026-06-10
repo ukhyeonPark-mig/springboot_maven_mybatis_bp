@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/app}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'프로필 수정 — ' + ${appName}">프로필 수정</title>
+        <meta name="robots" content="noindex, nofollow"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <section class="pt-4">
+        <div class="container-xl px-3">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <h2 class="page-title">프로필 수정</h2>
+                    <div class="page-pretitle">계정 세부정보를 관리하고 프로필 이미지를 업데이트합니다.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row">
+                <div class="col-xl-6 mb-3">
+                    <div id="profile-card" th:fragment="card">
+                        <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title mb-3">프로필 이미지</h4>
+
+                                <form hx-post="/client/profile" hx-target="#profile-card" hx-swap="outerHTML"
+                                      hx-encoding="multipart/form-data">
+                                    <div class="mb-3">
+                                        <label for="profile_image" class="form-label">업로드 이미지 (jpg, jpeg, png)</label>
+                                        <input name="profile_image" type="file" id="profile_image" class="form-control"
+                                               accept="image/jpg, image/jpeg, image/png" onchange="bpPreview(this)">
+                                    </div>
+                                    <div class="mb-2" id="preview-wrap" style="display:none">
+                                        <img id="preview-img" alt="Preview" width="100" class="rounded">
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-primary" type="submit">이미지 저장</button>
+                                    </div>
+                                </form>
+
+                                <th:block th:if="${#authentication.principal.profileImage != null}">
+                                    <hr class="my-3">
+                                    <h6>현재 프로필:</h6>
+                                    <img th:src="${r2PublicUrl} + '/user/profile_image/100/' + ${#authentication.principal.profileImage}"
+                                         alt="Profile" width="100" class="rounded">
+                                    <div class="mt-2">
+                                        <button class="btn btn-sm btn-danger"
+                                                hx-post="/client/profile/delete" hx-target="#profile-card" hx-swap="outerHTML">이미지 삭제</button>
+                                    </div>
+                                </th:block>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script>
+        function bpPreview(input) {
+            var wrap = document.getElementById('preview-wrap');
+            var img = document.getElementById('preview-img');
+            if (input.files && input.files[0]) {
+                img.src = URL.createObjectURL(input.files[0]);
+                wrap.style.display = '';
+            } else {
+                wrap.style.display = 'none';
+            }
+        }
+    </script>
+</th:block>
+</body>
+</html>

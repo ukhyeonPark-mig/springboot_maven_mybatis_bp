@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'대시보드 — ' + ${appName}">대시보드</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header d-print-none">
+        <div class="container-xl">
+            <div class="row g-2 align-items-center">
+                <div class="col">
+                    <h2 class="page-title" th:text="#{nav.dashboard}">대시보드</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="row row-deck row-cards">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="text-secondary mb-0">관리자 대시보드입니다. 요약 카드는 이후 단계에서 추가됩니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

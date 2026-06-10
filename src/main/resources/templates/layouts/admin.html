@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{fragments/commons :: head}"></th:block>
+    <meta name="csrf-token" th:content="${_csrf != null ? _csrf.token : ''}"/>
+    <th:block th:replace="~{fragments/commons :: csrf}"></th:block>
+
+    <th:block layout:fragment="seo">
+        <title th:text="'관리자 — ' + ${appName}">관리자</title>
+    </th:block>
+    <th:block layout:fragment="css"></th:block>
+</head>
+
+<body class="layout-fluid">
+    <div class="page">
+        <th:block th:replace="~{fragments/admin_sidebar :: sidebar}"></th:block>
+        <div class="page-wrapper">
+            <th:block th:replace="~{fragments/admin_topbar :: topbar}"></th:block>
+            <th:block layout:fragment="content"></th:block>
+            <th:block th:replace="~{fragments/admin_footer :: footer}"></th:block>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+
+    <th:block th:replace="~{fragments/commons :: tablerJs}"></th:block>
+    <th:block th:replace="~{fragments/commons :: htmx}"></th:block>
+    <th:block layout:fragment="js"></th:block>
+</body>
+</html>

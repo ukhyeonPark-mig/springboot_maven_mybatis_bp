@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{fragments/commons :: head}"></th:block>
+
+    <th:block layout:fragment="seo">
+        <title th:text="'오류 — ' + ${appName}">오류</title>
+    </th:block>
+    <th:block layout:fragment="css"></th:block>
+</head>
+
+<body class="border-top-wide border-primary">
+    <th:block layout:fragment="content"></th:block>
+
+    <th:block th:replace="~{fragments/commons :: tablerJs}"></th:block>
+    <th:block layout:fragment="js"></th:block>
+</body>
+</html>

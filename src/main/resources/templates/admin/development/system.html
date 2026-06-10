@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'시스템 정보 — ' + ${appName}">시스템 정보</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header">
+        <div class="container-xl"><h2 class="page-title">시스템 정보</h2></div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div class="card">
+                <table class="table card-table table-vcenter">
+                    <tbody>
+                        <tr th:each="entry : ${info}">
+                            <td class="w-25 text-secondary" th:text="${entry.key}">key</td>
+                            <td th:text="${entry.value}">value</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

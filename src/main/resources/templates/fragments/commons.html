@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--
+  모든 레이아웃이 공유하는 공통 head/스크립트 조각.
+  Tabler·HTMX 버전이 여기 한곳에만 있으므로, 버전 업그레이드 시 이 파일만 고치면 된다.
+-->
+<head>
+<!-- 공통 head: 인코딩/뷰포트 메타 + 파비콘 + Tabler CSS + 기본 스타일 리셋 (모든 레이아웃) -->
+<th:block th:fragment="head">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <link rel="icon" href="/favicon.ico" sizes="any"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/css/tabler.min.css"/>
+    <style>
+        /* 세로 스크롤바가 나타날 때 좌측 마진 제거 (PRD §15.1) */
+        html { margin-left: 0 !important; }
+        a, a:hover, a:focus, a:active, a:visited { text-decoration: none; }
+        a:not(.btn), a:not(.btn):hover, a:not(.btn):focus,
+        a:not(.btn):active, a:not(.btn):visited { color: inherit; }
+    </style>
+</th:block>
+
+<!-- CSRF 메타: HTMX 요청에 토큰을 싣기 위함 (인증 영역 레이아웃에서 사용) -->
+<th:block th:fragment="csrf">
+    <meta name="_csrf" th:content="${_csrf != null ? _csrf.token : ''}"/>
+    <meta name="_csrf_header" th:content="${_csrf != null ? _csrf.headerName : 'X-CSRF-TOKEN'}"/>
+</th:block>
+</head>
+<body>
+<!-- Tabler JS (모든 레이아웃) -->
+<th:block th:fragment="tablerJs">
+    <script src="https://cdn.jsdelivr.net/npm/@tabler/core@1.4.0/dist/js/tabler.min.js" defer></script>
+</th:block>
+
+<!-- HTMX 라이브러리 + CSRF 자동 연동 (인증 영역 레이아웃) -->
+<th:block th:fragment="htmx">
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.4/dist/htmx.min.js"></script>
+    <script th:replace="~{fragments/htmx_csrf :: script}"></script>
+</th:block>
+</body>
+</html>

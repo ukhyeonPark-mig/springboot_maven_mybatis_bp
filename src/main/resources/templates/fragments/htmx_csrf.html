@@ -1,0 +1,15 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- meta 태그의 CSRF 토큰을 모든 HTMX 요청에 연결합니다 (PRD §9). -->
+<script th:fragment="script">
+    document.body.addEventListener('htmx:configRequest', function (evt) {
+        var token = document.querySelector('meta[name="_csrf"]');
+        var header = document.querySelector('meta[name="_csrf_header"]');
+        if (token && header && token.content) {
+            evt.detail.headers[header.content] = token.content;
+        }
+    });
+</script>
+</body>
+</html>

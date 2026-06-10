@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'브랜딩 — ' + ${appName}">브랜딩</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-body px-xl-3">
+        <div class="container-xl">
+            <div id="branding-card" th:fragment="card">
+                <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+                <form hx-post="/admin/setting/branding" hx-target="#branding-card" hx-swap="outerHTML"
+                      hx-encoding="multipart/form-data">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">정사각형 컬러 로고 (SVG)</label>
+                                    <input name="logo_color_square_svg" type="file" class="form-control" accept=".svg">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">컬러 로고 (SVG)</label>
+                                    <input name="logo_color_svg" type="file" class="form-control" accept=".svg">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">정사각형 흰색 로고 (SVG)</label>
+                                    <input name="logo_white_square_svg" type="file" class="form-control" accept=".svg">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">흰색 로고 (SVG)</label>
+                                    <input name="logo_white_svg" type="file" class="form-control" accept=".svg">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">정사각형 컬러 로고 (PNG)</label>
+                                    <input name="logo_color_square_png" type="file" class="form-control" accept=".png">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">컬러 로고 (PNG)</label>
+                                    <input name="logo_color_png" type="file" class="form-control" accept=".png">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">정사각형 흰색 로고 (PNG)</label>
+                                    <input name="logo_white_square_png" type="file" class="form-control" accept=".png">
+                                </div>
+                                <div class="col-xl-3 mb-3">
+                                    <label class="form-label">흰색 로고 (PNG)</label>
+                                    <input name="logo_white_png" type="file" class="form-control" accept=".png">
+                                </div>
+                            </div>
+                            <div class="alert alert-info mb-0">
+                                업로드한 브랜딩 파일은 <code>/branding/</code> 경로에 저장되며, 정사각형 컬러 PNG 업로드 시
+                                <code>favicon.ico</code>와 다중 사이즈 PNG(512·192·180·150·32·16)가 자동으로 생성됩니다.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end mb-3">
+                        <button type="submit" class="btn btn-primary">업데이트</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

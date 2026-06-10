@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <th:block th:replace="~{fragments/commons :: head}"></th:block>
+    <th:block th:replace="~{fragments/commons :: csrf}"></th:block>
+    <link rel="canonical" th:href="${currentUrl}"/>
+
+    <!-- SEO 슬롯 (각 페이지에서 layout:fragment="seo"로 재정의) -->
+    <th:block layout:fragment="seo">
+        <title th:text="${appName}">BP</title>
+    </th:block>
+    <th:block layout:fragment="css"></th:block>
+</head>
+
+<body>
+    <div class="page">
+        <th:block th:replace="~{fragments/app_navbar :: navbar}"></th:block>
+        <div class="page-wrapper">
+            <th:block layout:fragment="content"></th:block> <!-- layout:decorate="~{layouts/app}" 이 명시돼있는 html이 여기에 감싸져 들어감-->
+            <th:block th:replace="~{fragments/app_footer :: footer}"></th:block>
+        </div>
+    </div>
+
+    <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+
+    <th:block th:replace="~{fragments/commons :: tablerJs}"></th:block>
+    <th:block th:replace="~{fragments/commons :: htmx}"></th:block>
+    <th:block layout:fragment="js"></th:block>
+</body>
+</html>

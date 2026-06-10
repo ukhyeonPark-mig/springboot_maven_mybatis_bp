@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/auth}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'로그인 — ' + ${appName}">로그인</title>
+        <meta name="description" th:content="${appName} + '에 로그인하세요.'"/>
+        <meta name="robots" content="noindex, nofollow"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page page-center">
+        <div class="container container-tight py-4">
+            <div class="text-center mb-4">
+                <a th:href="@{/}" class="navbar-brand navbar-brand-autodark">
+                    <img th:if="${hasLogoColorSvg}" th:src="@{/branding/logo_color.svg}" th:alt="${appName}" style="height: 36px; width: auto;">
+                    <span th:unless="${hasLogoColorSvg}" class="fw-bold fs-2" th:text="${appName}">BP</span>
+                </a>
+            </div>
+
+            <!-- ── 교체 가능한 인증 카드 (HTMX 대상) ───────────────────────── -->
+            <div id="auth-card" th:fragment="card"
+                 th:with="action=${page == 'Signin'} ? '/signin/login'
+                                  : (${page == 'Signup'} ? '/signin/signup'
+                                  : (${codeMatch} ? '/signin/reset/password'
+                                  : (${resetField} ? '/signin/reset/verify' : '/signin/reset/send'))),
+                          submitLabel=${page == 'Signin'} ? '로그인'
+                                  : (${page == 'Signup'} ? '회원가입'
+                                  : (${codeMatch} ? '비밀번호 재설정'
+                                  : (${resetField} ? '인증 코드 확인' : '인증 코드 전송')))">
+
+                <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+
+                <div class="card card-md">
+                    <div class="card-body">
+                        <h2 class="h2 text-center mb-4"
+                            th:text="${page == 'Signin'} ? '로그인' : (${page == 'Signup'} ? '회원가입' : '비밀번호 찾기')">로그인</h2>
+
+                        <form th:attr="hx-post=@{${action}}" hx-target="#auth-card" hx-swap="outerHTML" autocomplete="off">
+                            <div class="mb-3">
+                                <label class="form-label">이메일</label>
+                                <input name="email" type="email" class="form-control" placeholder="you@example.com" th:value="${email}"/>
+                            </div>
+
+                            <div class="mb-3" th:if="${page == 'Signup'}">
+                                <label class="form-label">이름</label>
+                                <input name="name" type="text" class="form-control" placeholder="이름을 입력하세요" th:value="${name}"/>
+                            </div>
+
+                            <div class="mb-3" th:if="${page == 'Forgot Password' and resetField and !codeMatch}">
+                                <label class="form-label">인증 코드</label>
+                                <input name="code" type="text" class="form-control" placeholder="이메일로 받은 6자리 코드"/>
+                            </div>
+
+                            <div class="mb-3" th:if="${page != 'Forgot Password' or codeMatch}">
+                                <label class="form-label" th:text="${page == 'Forgot Password'} ? '새 비밀번호' : '비밀번호'">비밀번호</label>
+                                <div class="input-group input-group-flat">
+                                    <input name="password" type="password" class="form-control" placeholder="비밀번호를 입력하세요" autocomplete="off"/>
+                                    <span class="input-group-text">
+                                        <span class="link-secondary" style="cursor:pointer" onclick="bpTogglePassword(this)">
+                                            <svg data-eye="off" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.585 10.587a2 2 0 0 0 2.829 2.828" /><path d="M16.681 16.673a8.717 8.717 0 0 1 -4.681 1.327c-3.6 0 -6.6 -2 -9 -6c1.272 -2.12 2.712 -3.678 4.32 -4.674m2.86 -1.146a9.055 9.055 0 0 1 1.82 -.18c3.6 0 6.6 2 9 6c-.666 1.11 -1.379 2.067 -2.138 2.87" /><path d="M3 3l18 18" /></svg>
+                                            <svg data-eye="on" style="display:none" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" /><path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" /></svg>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="mb-3" th:if="${turnstileEnabled and (page == 'Signin' or page == 'Signup')}">
+                                <div class="cf-turnstile" th:attr="data-sitekey=${turnstileSiteKey}" data-callback="onTurnstileSuccess"></div>
+                                <input type="hidden" name="turnstileToken" id="turnstileToken"/>
+                            </div>
+
+                            <div class="form-footer">
+                                <button type="submit" class="btn btn-primary w-100" th:text="${submitLabel}">로그인</button>
+                            </div>
+                        </form>
+
+                        <!-- 로컬 개발 전용 퀵 로그인 -->
+                        <th:block th:if="${isLocal}">
+                            <hr class="my-3">
+                            <div class="text-secondary small text-center mb-2">로컬 개발 전용 퀵 로그인</div>
+                            <div class="d-flex gap-2">
+                                <button type="button" class="btn btn-dark flex-fill"
+                                        th:attr="hx-post=@{/signin/quick(role='client')}" hx-target="#auth-card" hx-swap="outerHTML">클라이언트 로그인</button>
+                                <button type="button" class="btn btn-dark flex-fill"
+                                        th:attr="hx-post=@{/signin/quick(role='admin')}" hx-target="#auth-card" hx-swap="outerHTML">관리자 로그인</button>
+                            </div>
+                        </th:block>
+                    </div>
+                </div>
+
+                <div class="text-center text-secondary mt-3">
+                    <th:block th:if="${page == 'Signin'}">
+                        비밀번호를 잊으셨나요?
+                        <span class="text-primary" style="cursor:pointer" th:attr="hx-get=@{/signin/tab(page='Forgot Password')}" hx-target="#auth-card" hx-swap="outerHTML">비밀번호 재설정</span>
+                        ·
+                        계정이 없으신가요?
+                        <span class="text-primary" style="cursor:pointer" th:attr="hx-get=@{/signin/tab(page='Signup')}" hx-target="#auth-card" hx-swap="outerHTML">회원가입</span>
+                    </th:block>
+                    <th:block th:if="${page == 'Signup'}">
+                        이미 계정이 있으신가요?
+                        <span class="text-primary" style="cursor:pointer" th:attr="hx-get=@{/signin/tab(page='Signin')}" hx-target="#auth-card" hx-swap="outerHTML">로그인</span>
+                    </th:block>
+                    <th:block th:if="${page == 'Forgot Password'}">
+                        비밀번호를 기억하시나요?
+                        <span class="text-primary" style="cursor:pointer" th:attr="hx-get=@{/signin/tab(page='Signin')}" hx-target="#auth-card" hx-swap="outerHTML">로그인</span>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="js">
+    <script>
+        function bpTogglePassword(el) {
+            var input = el.closest('.input-group').querySelector('input[name="password"]');
+            var off = el.querySelector('[data-eye="off"]');
+            var on = el.querySelector('[data-eye="on"]');
+            if (input.type === 'password') { input.type = 'text'; off.style.display = 'none'; on.style.display = ''; }
+            else { input.type = 'password'; off.style.display = ''; on.style.display = 'none'; }
+        }
+        function onTurnstileSuccess(token) {
+            var f = document.getElementById('turnstileToken');
+            if (f) f.value = token;
+        }
+        // HX-Trigger: turnstileReset -> reset the widget
+        document.body.addEventListener('turnstileReset', function () {
+            if (window.turnstile) { window.turnstile.reset(); }
+        });
+    </script>
+    <script th:if="${turnstileEnabled}" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</th:block>
+</body>
+</html>

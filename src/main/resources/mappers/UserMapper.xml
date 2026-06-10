@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.bp.mapper.UserMapper">
+
+    <sql id="columns">
+        id, role, email, email_verified_at, name, password,
+        otp, otp_expires_at, otp_attempts, profile_image, remember_token,
+        created_at, updated_at
+    </sql>
+
+    <select id="findByEmail" resultType="User">
+        SELECT <include refid="columns"/> FROM users WHERE email = #{email}
+    </select>
+
+    <select id="findById" resultType="User">
+        SELECT <include refid="columns"/> FROM users WHERE id = #{id}
+    </select>
+
+    <select id="findFirstByRole" resultType="User">
+        SELECT <include refid="columns"/> FROM users WHERE role = #{role} ORDER BY id LIMIT 1
+    </select>
+
+    <select id="existsByEmail" resultType="boolean">
+        SELECT EXISTS(SELECT 1 FROM users WHERE email = #{email})
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM users
+    </select>
+
+    <insert id="insert" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users
+            (role, email, email_verified_at, name, password,
+             otp, otp_expires_at, otp_attempts, profile_image, remember_token)
+        VALUES
+            (#{role}, #{email}, #{emailVerifiedAt}, #{name}, #{password},
+             #{otp}, #{otpExpiresAt}, #{otpAttempts}, #{profileImage}, #{rememberToken})
+    </insert>
+
+    <update id="updateOtp">
+        UPDATE users SET otp = #{otp}, otp_expires_at = #{otpExpiresAt}, otp_attempts = 0 WHERE id = #{id}
+    </update>
+
+    <update id="incrementOtpAttempts">
+        UPDATE users SET otp_attempts = otp_attempts + 1 WHERE id = #{id}
+    </update>
+
+    <update id="invalidateOtp">
+        UPDATE users SET otp = NULL, otp_expires_at = NULL, otp_attempts = 0 WHERE id = #{id}
+    </update>
+
+    <update id="updatePasswordAndVerify">
+        UPDATE users
+        SET password = #{password}, email_verified_at = NOW(),
+            otp = NULL, otp_expires_at = NULL, otp_attempts = 0
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePassword">
+        UPDATE users SET password = #{password} WHERE id = #{id}
+    </update>
+
+    <update id="updateProfileImage">
+        UPDATE users SET profile_image = #{profileImage} WHERE id = #{id}
+    </update>
+
+    <!-- 관리자 사용자 관리 (FR-9): 숫자 검색은 id 일치 또는 email/name LIKE 조건으로 처리 -->
+    <sql id="searchWhere">
+        <where>
+            <if test="search != null and search != ''">
+                (
+                    <if test="numericId != null">id = #{numericId} OR</if>
+                    email LIKE CONCAT('%', #{search}, '%') OR name LIKE CONCAT('%', #{search}, '%')
+                )
+            </if>
+            <if test="role != null and role != 'all'">
+                AND role = #{role}
+            </if>
+        </where>
+    </sql>
+
+    <select id="search" resultType="User">
+        SELECT <include refid="columns"/> FROM users
+        <include refid="searchWhere"/>
+        ORDER BY id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countSearch" resultType="long">
+        SELECT COUNT(*) FROM users
+        <include refid="searchWhere"/>
+    </select>
+
+    <select id="countByRole" resultType="long">
+        SELECT COUNT(*) FROM users WHERE role = #{role}
+    </select>
+
+    <update id="updateNameRole">
+        UPDATE users SET name = #{name}, role = #{role} WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM users WHERE id = #{id}
+    </delete>
+
+</mapper>

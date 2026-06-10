@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/admin}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'백업 — ' + ${appName}">백업</title>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page-header">
+        <div class="container-xl"><h2 class="page-title">백업</h2></div>
+    </div>
+    <div class="page-body">
+        <div class="container-xl">
+            <div id="backup-card" th:fragment="card">
+                <th:block th:replace="~{fragments/message :: toasts}"></th:block>
+                <div class="mb-3 d-flex justify-content-end">
+                    <button class="btn btn-primary" hx-post="/admin/development/backup/create"
+                            hx-target="#backup-card" hx-swap="outerHTML" hx-indicator="this">백업 생성</button>
+                </div>
+                <div class="card">
+                    <table class="table card-table table-vcenter">
+                        <thead><tr><th>파일</th><th>크기</th><th></th></tr></thead>
+                        <tbody>
+                            <tr th:each="b : ${backups}">
+                                <td th:text="${b.name}">backup.zip</td>
+                                <td th:text="${#numbers.formatDecimal(b.sizeBytes / 1024.0, 0, 1)} + ' KB'">0 KB</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-primary me-2" th:href="@{'/admin/development/backup/download/' + ${b.name}}">다운로드</a>
+                                    <button class="btn btn-sm btn-danger" hx-confirm="이 백업을 삭제하시겠습니까?"
+                                            th:attr="hx-post='/admin/development/backup/delete/' + ${b.name}"
+                                            hx-target="#backup-card" hx-swap="outerHTML">삭제</button>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(backups)}">
+                                <td colspan="3" class="text-secondary text-center">백업이 없습니다.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

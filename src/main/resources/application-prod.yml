@@ -1,0 +1,23 @@
+# ── 운영 프로파일 ───────────────────────────────────────────────────────
+# 모든 시크릿은 환경 변수로 주입한다. Turnstile 필수. 빠른 로그인 / 개발 도구 없음.
+# Cloudflare 뒤에 위치 -> 전달된 헤더를 신뢰한다 (rate-limit / Turnstile용 실제 클라이언트 IP).
+spring:
+  thymeleaf:
+    cache: true
+  mail:
+    host: ${MAIL_HOST:email-smtp.ap-northeast-2.amazonaws.com}
+    port: ${MAIL_PORT:587}
+    username: ${SES_ACCESS_KEY_ID:}
+    password: ${SES_SECRET_ACCESS_KEY:}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
+server:
+  forward-headers-strategy: native
+
+logging:
+  level:
+    com.example.bp: INFO
+  file:
+    name: ${LOG_FILE:logs/bp.log}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="footer">
+    <footer class="footer footer-transparent d-print-none">
+        <div class="container-xl">
+            <div class="row text-center align-items-center flex-row-reverse">
+                <div class="col-lg-auto ms-lg-auto">
+                    <ul class="list-inline list-inline-dots mb-0">
+                        <li class="list-inline-item">
+                            <a th:href="@{/privacy}" target="_blank" class="link-secondary" th:text="#{nav.privacy}">개인정보 처리방침</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a th:href="@{/terms}" target="_blank" class="link-secondary" th:text="#{nav.terms}">서비스 이용약관</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-12 col-lg-auto mt-3 mt-lg-0">
+                    <ul class="list-inline list-inline-dots mb-0">
+                        <li class="list-inline-item"
+                            th:text="${setting != null and setting.footer != null ? setting.footer : ('© ' + #dates.year(#dates.createNow()) + ' ' + appName)}">© 2026 BP</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</th:block>
+</body>
+</html>

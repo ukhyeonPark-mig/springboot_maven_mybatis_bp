@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/auth}">
+<head>
+    <th:block layout:fragment="seo">
+        <title th:text="'개인정보 처리방침 — ' + ${appName}">개인정보 처리방침</title>
+        <meta name="description" th:content="${appName} + '의 개인정보 처리방침입니다.'"/>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="page page-center">
+        <div class="container container-narrow py-4">
+            <div class="text-center mb-4">
+                <a th:href="@{/}" class="navbar-brand navbar-brand-autodark">
+                    <img th:if="${hasLogoColorSvg}" th:src="@{/branding/logo_color.svg}" style="max-width:160px" th:alt="${appName}">
+                    <span th:unless="${hasLogoColorSvg}" class="fw-bold fs-2" th:text="${appName}">BP</span>
+                </a>
+            </div>
+            <div class="card card-md">
+                <div class="card-body">
+                    <div class="markdown">
+                        <h1>개인정보 처리방침</h1>
+                        <div th:utext="${setting != null ? setting.privacy : ''}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
