@@ -15,7 +15,7 @@
 | 세션 저장 | **Spring Session JDBC** (DB에 세션 저장) |
 | 동시성 | **Virtual Threads**(Java 21 Loom) 활성 |
 
-핵심 철학: **"Laravel처럼 서버가 HTML을 그려서 내려주되, 부분 갱신은 HTMX로"**. React/Vue 같은 SPA가 아니라, Laravel + Livewire 시절의 개발 경험을 Spring에서 재현합니다.
+핵심 철학: **"Laravel처럼 서버가 HTML을 그려서 내려주되, 부분 갱신은 HTMX로"**
 
 ---
 
