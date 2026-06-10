@@ -335,6 +335,12 @@ Tabler CSS/JS, HTMX 버전이 한곳에만 있어, **버전 업그레이드 시 
 
 ---
 
-## 부록: 더 자세한 요청 흐름
+## 부록: 추가 문서 (`docs/`)
 
-라우트별 컨트롤러→서비스→매퍼(XML)→템플릿 전체 매핑은 **[docs/REQUEST_FLOW.md](docs/REQUEST_FLOW.md)** 참고.
+| 문서 | 내용 |
+|---|---|
+| [docs/01-extending-guide.md](docs/01-extending-guide.md) | **새 페이지/기능 추가** 표준 사이클 (컨트롤러→서비스→매퍼→템플릿, 복붙용 골격) |
+| [docs/02-view-conventions.md](docs/02-view-conventions.md) | **Thymeleaf/HTMX/Tabler** 뷰 작성 규약 (fragment·hx-* 패턴·토스트·UI 스니펫) |
+| [docs/03-content-format.md](docs/03-content-format.md) | 약관/개인정보(`terms`/`privacy`) **HTML 콘텐츠 포맷 규약** |
+| [docs/04-branding.md](docs/04-branding.md) | **브랜딩 자산**(로고/파비콘) 업로드·생성·교체 방법 |
+| [docs/REQUEST_FLOW.md](docs/REQUEST_FLOW.md) | 라우트별 컨트롤러→서비스→매퍼(XML)→템플릿 **전체 흐름 맵** |
