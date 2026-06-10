@@ -19,7 +19,7 @@
 
 ---
 
-## 1. Laravel ↔ Spring 개념 대응표 (가장 중요)
+## 1. Laravel ↔ Spring 개념 대응표
 
 | 역할 | Laravel (원본) | 이 프로젝트 (Spring) |
 |---|---|---|
@@ -133,7 +133,7 @@ http.authorizeHttpRequests(auth -> auth
     .anyRequest().authenticated())                      // ★ 기본 차단 (fail-safe)
 ```
 
-> **Laravel과 가장 큰 차이 — fail-safe(기본 차단).** `anyRequest().authenticated()`가 있어서 **명시적으로 permitAll 하지 않은 모든 경로는 자동으로 인증 필요**입니다. Laravel처럼 "라우트마다 미들웨어 붙이는 걸 깜빡하면 뚫리는" 사고가 구조적으로 안 납니다.
+> **Laravel과 가장 큰 차이 — fail-safe(기본 차단).** `anyRequest().authenticated()`가 있어서 **명시적으로 permitAll 하지 않은 모든 경로는 자동으로 인증 필요**입니다.
 
 - 이 검사는 **컨트롤러 도달 전, 필터 단계**에서 일어납니다 (요청 파이프라인 최전선).
 - 미인증 + 보호 자원 → `/signin`으로 리다이렉트(`formLogin`의 진입점 역할만). 인증됐지만 admin 아님 → **403** (`templates/error/403.html`).
