@@ -1,7 +1,7 @@
 # 요청 흐름 & 보안 점검 맵 (BP 보일러플레이트)
 
-> Spring Boot + MyBatis(XML) + Thymeleaf(Layout Dialect) + HTMX + Spring Session(JDBC).
-> 라우트 경로/컨트롤러 줄번호는 확인된 값. 서비스/매퍼 내부 줄번호는 점검 시 대조용 참고치.
+> Spring Boot 3.2 / Java 21 + MyBatis(XML) + Thymeleaf(Layout Dialect) + HTMX + Spring Session(JDBC) + Virtual Threads.
+> 라우트 **경로**는 현행 기준. 줄번호(`:NN`)는 그동안의 리팩터링으로 이동했을 수 있어 **대략값**이니, 점검 시 메서드명으로 찾으세요.
 
 ---
 
@@ -25,6 +25,7 @@ HTTP 요청
 핵심 설계 2가지:
 - **수동 로그인**: 실제 인증은 Spring `formLogin`이 아니라 `SigninController`가 직접 처리(rate-limit + Turnstile + HTMX fragment). `formLogin`은 "미인증 시 /signin으로 보내고 원래 URL 저장"하는 **진입점 역할만**.
 - **HTMX fragment 응답**: 대부분의 POST는 전체 페이지가 아니라 `템플릿 :: fragment`를 부분 갱신으로 반환. 리다이렉트가 필요하면 `HX-Redirect` 헤더 + `fragments/empty :: empty` 반환.
+- **전역 예외 처리**: `web/exception/GlobalExceptionHandler`(`@ControllerAdvice`)가 `CardException`/`BusinessException`/예상치 못한 예외를 받아 `HX-Request` 헤더로 **HTMX(부분 fragment·OOB 토스트) ↔ 일반(오류 페이지)** 분기. 단, 폼 상태가 복잡한 signin/contact는 컨트롤러 내 인라인 처리.
 
 ---
 
@@ -94,12 +95,15 @@ POST /signin/login (SigninController)
 | `config/WebConfig.java` | 정적 핸들러: `/branding/**`→`BrandingService.dir()`, `/storage/**`→로컬 업로드(R2 미사용 시) |
 | `config/MyBatisConfig.java` | `@MapperScan("com.example.bp.mapper")` |
 | `config/ThymeleafConfig.java` | LayoutDialect 빈 (`layout:decorate`/`layout:fragment`) |
-| `config/AsyncConfig.java` | `@EnableAsync` (현재 메일은 동기 전송) |
 | `config/SchedulingConfig.java` | `@EnableScheduling` + `@Profile("prod")`: 매일 02:00 백업, 02:30 14일 경과분 정리 |
+| `web/exception/GlobalExceptionHandler.java` | `@ControllerAdvice` — `CardException`/`BusinessException`/catch-all, HTMX↔전체페이지 분기 |
+| `BpApplication.java` | 진입점 + 타임존(Asia/Seoul). `@EnableAsync`는 주석 처리(미사용). 가상 스레드는 `application.yml`에서 활성 |
 
 ---
 
 ## 4. 라우트 맵 (영역별)
+
+> 다중 라우트 컨트롤러는 클래스 레벨 `@RequestMapping("공통경로")` + 메서드 상대경로로 정리됨(예: `AdminUserController`=`/admin/user`, `AdminSettingController`=`/admin/setting`, `SigninController`=`/signin`, `ContactController`=`/contact`). **최종 URL은 아래 표 그대로** 유지.
 
 ### 4.1 공개 (permitAll)
 | 메서드 · 경로 | 컨트롤러#메서드 (파일) | 흐름 | 응답 |
@@ -108,7 +112,7 @@ POST /signin/login (SigninController)
 | GET `/privacy` | LegalController#privacy (`web/home/LegalController.java:14`) | `setting.privacy`(GlobalModelAttributes) | 전체 `home/privacy` (`th:utext`) |
 | GET `/terms` | LegalController#terms (`web/home/LegalController.java:19`) | `setting.terms` | 전체 `home/terms` |
 | GET `/contact` | ContactController#contact (`web/home/ContactController.java:45`) | Turnstile enabled/siteKey 주입 | 전체 `home/contact` |
-| POST `/contact` | ContactController#send (`:51`) | RateLimit(contact 3/600s) → Turnstile.verify → 검증 → MailService.sendHtml(reply-to+첨부) | HTMX `home/contact :: card` |
+| POST `/contact` | ContactController#send | RateLimit(contact 3/600s) → Turnstile.verify → 검증 → MailService.sendHtml(**SES API**, reply-to+첨부, 실패 시 log.warn) | HTMX `home/contact :: card` |
 | GET `/sitemap.xml` | SitemapController#sitemap (`web/home/SitemapController.java:22`) | `AppProperties.url()` 기반 XML 생성 | XML 문자열 |
 
 ### 4.2 인증 (signin, permitAll) — `web/home/SigninController.java`
@@ -185,7 +189,7 @@ POST /signin/login (SigninController)
 | `service/SettingService.java` | settings 싱글톤 get/update (없으면 생성) |
 | `service/OtpService.java` | OTP 생성·만료·시도·상수시간 비교 |
 | `service/TurnstileService.java` | Cloudflare 검증(enabled/verify) |
-| `service/MailService.java` | SES SMTP HTML 메일(미설정 시 로그 폴백), 첨부/reply-to |
+| `service/MailService.java` | HTML 메일 발송. `app.ses` 키 있으면 **SES API(SDK, sesv2)**, 없으면 SMTP, 둘 다 없으면 로그. 첨부/reply-to 지원 |
 | `service/ProfileImageService.java` | 검증→WebP 변환→R2 업로드→옛 이미지 정리 |
 | `service/ImageService.java` | Scrimage: WebP cover, PNG square |
 | `service/R2StorageService.java` | R2(S3 호환) 또는 로컬 `/storage` 추상화 |
@@ -204,8 +208,9 @@ layouts/admin.html   → 관리자 (admin_sidebar/topbar/footer)
 layouts/error.html   → 오류 페이지
 
 공통 fragments:
+  fragments/commons.html    → 레이아웃 공통 head/scripts (Tabler CSS/JS·HTMX 버전을 한곳에서 관리)
   fragments/htmx_csrf.html  → htmx:configRequest 시 CSRF 헤더 자동 첨부
-  fragments/message.html    → toasts (message/success/error)
+  fragments/message.html    → toasts (message/success/error) + errorOob (OOB 오류 토스트)
   fragments/empty.html      → HX-Redirect 전용 빈 본문
   fragments/app_navbar.html → 사용자 메뉴 아바타(없으면 /image/no_profile_image.webp)
   fragments/admin_sidebar.html / admin_topbar.html / admin_footer.html
@@ -226,3 +231,5 @@ layouts/error.html   → 오류 페이지
 - [ ] 관리자 dev 도구: DB 브라우저/SystemInfo는 local 전용 게이트, 백업 name 경로 traversal 방지, mysqldump 자격증명 전달.
 - [ ] 비밀번호: BCrypt cost 12, 정책 정규식 8~15자.
 - [ ] 시드 관리자(`admin@example.com`/`password1!`) — 운영 배포 전 변경.
+- [ ] **AWS/SES 시크릿**: `application.yml` 기본값에 실제 키 박지 말 것(환경변수 주입). 노출 시 즉시 회전. SES 발신주소 검증·샌드박스 여부, 문의 수신함(`CONTACT_TO_ADDRESS`) 확인.
+- [ ] **Flyway**: 이미 적용된 마이그레이션 파일은 수정 금지(checksum mismatch). 로컬은 `validate-on-migrate: false`로 완화됨.
