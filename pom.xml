@@ -164,6 +164,12 @@
             <artifactId>s3</artifactId>
         </dependency>
 
+        <!-- AWS SDK v2 SES v2 클라이언트: SES API로 메일 발송 (SMTP 자격증명 없이 IAM 키 사용) -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sesv2</artifactId>
+        </dependency>
+
         <!-- Scrimage: 프로필 이미지 WebP 인코딩 (PRD §FR-8.2). cwebp/dwebp 번들 포함. -->
         <dependency>
             <groupId>com.sksamuel.scrimage</groupId>

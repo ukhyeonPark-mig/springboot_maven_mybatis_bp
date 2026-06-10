@@ -8,6 +8,8 @@ import com.example.bp.support.AppProperties;
 import com.example.bp.support.RateLimiterService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -30,6 +32,7 @@ public class ContactController {
     private static final long MAX_FILE_BYTES = 10L * 1024 * 1024; // 10MB
     private static final int MAX_MESSAGE_LEN = 5000;
     private static final String CARD = "home/contact :: card";
+    private static final Logger log = LoggerFactory.getLogger(ContactController.class);
 
     private final TurnstileService turnstileService;
     private final RateLimiterService rateLimiter;
@@ -92,6 +95,7 @@ public class ContactController {
             model.addAttribute("success", "문의가 정상적으로 전송되었습니다. 빠른 시일 내에 답변 드리겠습니다.");
             populate(model, null, null, null, null); // 성공 시 초기화
         } catch (Exception e) {
+            log.warn("문의 메일 발송 실패 (발신자 reply-to={})", email, e);
             response.setHeader("HX-Trigger", "turnstileReset");
             model.addAttribute("error", "메일 전송에 실패했습니다. 잠시 후 다시 시도해 주세요.");
             populate(model, name, email, subject, message);

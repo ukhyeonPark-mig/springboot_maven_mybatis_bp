@@ -6,6 +6,12 @@ spring:
   profiles:
     active: ${APP_ENV:local}
 
+  # 요청을 가상 스레드(Java 21 Loom)로 처리 → 블로킹 I/O(DB·SES·R2) 대기 중 OS 스레드를
+  # 점유하지 않아 동시 처리량이 향상된다. 코드 변경 불필요.
+  threads:
+    virtual:
+      enabled: true
+
   datasource:
     url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_DATABASE:bp}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8&useSSL=false&allowPublicKeyRetrieval=true
     username: ${DB_USERNAME:root}
@@ -66,8 +72,8 @@ app:
     secret-access-key: ${SES_SECRET_ACCESS_KEY:}
     region: ${SES_DEFAULT_REGION:ap-northeast-2}
   mail:
-    from-address: ${MAIL_FROM_ADDRESS:no-reply@example.com}
-    from-name: ${MAIL_FROM_NAME:BP}
+    from-address: ${MAIL_FROM_ADDRESS:crm@mig.kr}
+    from-name: ${MAIL_FROM_NAME:${APP_NAME:BP}}
   contact:
     to-address: ${CONTACT_TO_ADDRESS:}
     to-name: ${CONTACT_TO_NAME:}
